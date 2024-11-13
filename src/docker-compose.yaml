@@ -1,0 +1,40 @@
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes: 
+      - db_data: /var/lib/postgresql/data
+  fetcher:
+    build:
+      context: ./Fetcher
+      dockerfile: ./Fetcher/Dockerfile
+    volumes: 
+      - ../dataset: /dataset:ro # FIXME REMOVE THE COMMENT BEFORE UPLOAD TO MOODLE This is a bit hacky
+      - img: /img
+    depends_on:
+      - db
+  REST_API:
+    ports:
+      - 8000:8000
+    build:
+      context: ./REST_API
+      dockerfile: ./REST_API/Dockerfile
+    volumes: 
+      - img: /img
+    depends_on:
+      - db
+      - fetcher
+  frontend:
+    ports:
+      - 80:80 # HOST:CONTAINER
+    build:
+      context: ./Frontend/
+      dockerfile: ./Frontend/Dockerfile
+    depends_on: 
+      - db
+      - REST_API
+
+volumes:
+  img:
+  db_data:
