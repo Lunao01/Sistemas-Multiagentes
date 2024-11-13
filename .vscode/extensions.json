@@ -1,0 +1,9 @@
+{
+    "recommendations": [
+        "pomdtr.excalidraw-editor",
+        "ms-python.python",
+        "njpwerner.autodocstring",
+        "kevinrose.vsc-python-indent",
+        "ms-python.black-formatter"
+    ]
+}
