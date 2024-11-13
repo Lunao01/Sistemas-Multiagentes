@@ -1,6 +1,6 @@
 # Sistemas-Multiagentes
 ## listado de Requisitos 
-## Requisitos funcionales
+### Requisitos funcionales
 - El usuario debe ser capaz de crearse una cuenta.
 - El usuario debe ser capaz de acceder a la aplicación con su usario y contraseña.
 - La aplicación tendrá dos funcionalidades distintas:
@@ -11,4 +11,4 @@
     - Desbloquea pokémons en la pokédex.
   - Ranking: el usuario puede ver su posición en el ranking.
 
-## Requisitos no funcionales
+### Requisitos no funcionales
