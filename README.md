@@ -1,5 +1,5 @@
 # Sistemas-Multiagentes
-## listado de Requisitos 
+## Lista de requisitos 
 ### Requisitos funcionales
 - El usuario debe ser capaz de crearse una cuenta.
 - El usuario debe ser capaz de acceder a la aplicación con su nombre de usario y contraseña.
