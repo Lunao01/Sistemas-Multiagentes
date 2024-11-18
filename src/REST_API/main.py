@@ -1,7 +1,12 @@
+from fastapi import FastAPI
 
-def main() -> None:
-    pass
+app = FastAPI()
 
+@app.get("/")
+def read_root():
+    return {"Hello": "World"}
 
-if __name__=="__main__":
-    main()
+@app.get("/items/{item_id}")
+def read_item(item_id: int, q: str = ""):
+    return {"item_id": item_id, "q": q}
+
