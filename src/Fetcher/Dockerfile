@@ -3,6 +3,7 @@ FROM python:3.9.20-alpine3.20
 
 COPY . /app
 
+COPY ../ORMSchema /app/ORMSchema
 # Set the working directory to /app
 WORKDIR /app
 
