@@ -4,24 +4,24 @@ services:
     environment:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes: 
-      - db_data: /var/lib/postgresql/data
+      - db_data:/var/lib/postgresql/data
   fetcher:
     build:
       context: ./Fetcher
-      dockerfile: ./Fetcher/Dockerfile
+      dockerfile: ./Dockerfile
     volumes: 
-      - ../dataset: /dataset:ro # FIXME REMOVE THE COMMENT BEFORE UPLOAD TO MOODLE This is a bit hacky
-      - img: /img
+      - ../dataset:/dataset:ro # FIXME REMOVE THE COMMENT BEFORE UPLOAD TO MOODLE This is a bit hacky
+      - img:/img
     depends_on:
       - db
-  REST_API:
+  rest_api:
     ports:
       - 8000:8000
     build:
       context: ./REST_API
-      dockerfile: ./REST_API/Dockerfile
+      dockerfile: ./Dockerfile
     volumes: 
-      - img: /img
+      - img:/img
     depends_on:
       - db
       - fetcher
@@ -30,10 +30,10 @@ services:
       - 80:80 # HOST:CONTAINER
     build:
       context: ./Frontend/
-      dockerfile: ./Frontend/Dockerfile
+      dockerfile: ./Dockerfile
     depends_on: 
       - db
-      - REST_API
+      - rest_api
 
 volumes:
   img:
