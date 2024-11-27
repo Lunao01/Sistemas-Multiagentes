@@ -13,4 +13,8 @@
     - Desbloquea pokémons en la pokédex.
 
 
-### Requisitos no funcionales
+### Requerimientos
+Flask         3.1.0
+Flask-Login   0.6.3
+Flask-MySQLdb 2.0.0
+Flask-WTF     1.2.2
