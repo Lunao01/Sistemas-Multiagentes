@@ -8,4 +8,5 @@ DB_USER=getenv('DB_USER') if getenv('DB_USER') is not None else 'postgres' # def
 
 assert DB_PASSWORD is not None, "DB_PASSWORD is not set"
 engine = create_engine(f"postgresql://{DB_USER}:{DB_PASSWORD}@localhost:5432/pokemon")
+# engine = create_engine('sqlite:///pokemon.db')
 del DB_PASSWORD,DB_USER
