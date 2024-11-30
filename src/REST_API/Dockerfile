@@ -4,7 +4,7 @@ FROM python:3.9.20-alpine3.20
 COPY . /app
 
 COPY ../ORMSchema /app/ORMSchema
-COPY ../.env /app/ORMSchema/.env
+COPY ../.env /app/.env
 # Set the working directory to /app
 WORKDIR /app
 
