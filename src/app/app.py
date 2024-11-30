@@ -12,14 +12,14 @@ def index():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        print(request.form['username']) # username del formulario ..
+        print(request.form['username']) # username del formulario
         print(request.form['password']) # password del formulario
-        return render_template('auth/login.html')
+        return render_template('menu/menu.html')
 
     else: # Si es GET se renderiza la página login.html
         return render_template('auth/login.html') # ruta de la plantilla html index
 
 
 if __name__ == '__main__':
-    app.config.from_object(config['development'])
+    app.config.from_object(config['development']) # usar configuración del diccionario definido en config.py
     app.run()
