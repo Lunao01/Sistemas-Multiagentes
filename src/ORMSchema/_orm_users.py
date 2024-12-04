@@ -11,6 +11,15 @@ pokemon_unlocked_by = Table(
 )
 
 
+class Score(Base):
+    __tablename__ = "scores"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    user: Mapped[int] = mapped_column(
+        Integer(), ForeignKey("users.id"), primary_key=True
+    )
+    score: Mapped[int] = mapped_column(Integer())
+
+
 class User(Base):
     __tablename__ = "users"
     id: Mapped[int] = mapped_column(primary_key=True)
