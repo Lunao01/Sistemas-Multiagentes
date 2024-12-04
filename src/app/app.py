@@ -29,5 +29,3 @@ def menu():
 if __name__ == '__main__':
     app.config.from_object(config['development']) # usar configuración del diccionario definido en config.py
     app.run()
-
-    # Se ha guardado :) 2
