@@ -23,5 +23,3 @@ X-Token: Bco0cck0xp8Be7qqWE_yFU4Ji-ZxxhKjkgzr2LEKQOQ
     ¿Qué consigue el usuario jugando?
     - Puntos para el ranking (esto se traduce en "medallas de gimnasio").
     - Desbloquea pokémons en la pokédex.
-
-### Requisitos no funcionales

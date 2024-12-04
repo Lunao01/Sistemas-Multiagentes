@@ -1,0 +1,132 @@
+/* Estilo general */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f8f8f8;
+}
+
+/* Contenedor principal */
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+  max-width: 900px;
+  padding: 20px;
+  box-sizing: border-box;
+  text-align: center;
+  position: relative;
+}
+
+/* Pregunta */
+.question {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 40px;
+}
+
+/* Contenedor de botones centrados */
+.buttons-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  max-width: 700px;
+  gap: 20px;
+}
+
+/* Botones grandes para los Pokémon */
+.pokemon-btn {
+  flex: 1;
+  background-color: white;
+  border: 3px solid #ccc;
+  border-radius: 15px;
+  padding: 20px;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  height: 250px; /* Altura fija */
+  max-width: 300px;
+}
+
+.pokemon-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Imagen dentro de los botones */
+.pokemon-btn img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+}
+
+/* Estilo del Score */
+.score {
+  font-size: 1.5rem;
+  color: #333;
+  position: absolute;
+  bottom: 20px;
+  right: 20px;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+  .question {
+    font-size: 1.8rem;
+  }
+
+  .buttons-container {
+    flex-direction: column;
+  }
+
+  .pokemon-btn {
+    height: 200px;
+    width: 100%;
+  }
+
+  .score {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .question {
+    font-size: 1.5rem;
+  }
+
+  .pokemon-btn {
+    height: 180px;
+  }
+}
+
+/* Menú superior con íconos */
+.top-menu {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 20px;
+}
+
+/* Estilo de los íconos */
+.icon {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.icon:hover {
+  opacity: 0.8;
+  transform: scale(1.1);
+}
