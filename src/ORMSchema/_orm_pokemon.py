@@ -19,7 +19,7 @@ class Base(DeclarativeBase):
 class Pokemon(Base):
     __tablename__ = "pokemon"
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(UnicodeText)
+    name: Mapped[str] = mapped_column(UnicodeText())
     base_experience: Mapped[int] = mapped_column(Integer())
     height: Mapped[int] = mapped_column(Integer())
     weight: Mapped[int] = mapped_column(Integer())
@@ -44,11 +44,13 @@ class Pokemon(Base):
     special_attack: Mapped[int] = mapped_column(Integer())
     special_defense: Mapped[int] = mapped_column(Integer())
     speed: Mapped[int] = mapped_column(Integer())
+    evolution: Mapped[str] = mapped_column(UnicodeText())
+    evolution_level: Mapped[int] = mapped_column(Integer())
 
 
 class Habitat(Base):
     __tablename__ = "habitat"
-    id: Mapped[str] = mapped_column(UnicodeText, primary_key=True)
+    habitat: Mapped[str] = mapped_column(UnicodeText(), primary_key=True)
     pokemon: Mapped[int] = mapped_column(
         Integer(), ForeignKey("pokemon.id"), primary_key=True
     )
@@ -56,7 +58,7 @@ class Habitat(Base):
 
 class Ability(Base):
     __tablename__ = "ability"
-    id: Mapped[str] = mapped_column(UnicodeText, primary_key=True)
+    ability: Mapped[str] = mapped_column(UnicodeText(), primary_key=True)
     pokemon: Mapped[int] = mapped_column(
         Integer(), ForeignKey("pokemon.id"), primary_key=True
     )
@@ -64,7 +66,7 @@ class Ability(Base):
 
 class Form(Base):
     __tablename__ = "form"
-    id: Mapped[str] = mapped_column(UnicodeText, primary_key=True)
+    form: Mapped[str] = mapped_column(UnicodeText(), primary_key=True)
     pokemon: Mapped[int] = mapped_column(
         Integer(), ForeignKey("pokemon.id"), primary_key=True
     )
@@ -72,7 +74,7 @@ class Form(Base):
 
 class Move(Base):
     __tablename__ = "move"
-    id: Mapped[str] = mapped_column(UnicodeText, primary_key=True)
+    move: Mapped[str] = mapped_column(UnicodeText(), primary_key=True)
     pokemon: Mapped[int] = mapped_column(
         Integer(), ForeignKey("pokemon.id"), primary_key=True
     )
@@ -80,7 +82,7 @@ class Move(Base):
 
 class Type(Base):
     __tablename__ = "type"
-    id: Mapped[str] = mapped_column(UnicodeText, primary_key=True)
+    type: Mapped[str] = mapped_column(UnicodeText(), primary_key=True)
     pokemon: Mapped[int] = mapped_column(
         Integer(), ForeignKey("pokemon.id"), primary_key=True
     )
