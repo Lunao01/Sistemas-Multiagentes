@@ -44,8 +44,8 @@ class Pokemon(Base):
     special_attack: Mapped[int] = mapped_column(Integer())
     special_defense: Mapped[int] = mapped_column(Integer())
     speed: Mapped[int] = mapped_column(Integer())
-    evolution: Mapped[str] = mapped_column(UnicodeText())
-    evolution_level: Mapped[int] = mapped_column(Integer())
+    evolution: Mapped[str] = mapped_column(UnicodeText(),nullable=True)
+    evolution_level: Mapped[int] = mapped_column(Integer(),nullable=True)
 
 
 class Habitat(Base):
