@@ -6,8 +6,8 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 pokemon_unlocked_by = Table(
     "pokemon_unlocked_tbl",
     Base.metadata,
-    Column("pokemon", ForeignKey("pokemon.id")),
-    Column("user", ForeignKey("users.id")),
+    Column("pokemon", ForeignKey("pokemon.id"), primary_key=True),
+    Column("user", ForeignKey("users.id"), primary_key=True),
 )
 
 
