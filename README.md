@@ -11,10 +11,3 @@
     ¿Qué consigue el usuario jugando?
     - Puntos para el ranking (esto se traduce en "medallas de gimnasio").
     - Desbloquea pokémons en la pokédex.
-
-
-### Requerimientos
-Flask         3.1.0
-Flask-Login   0.6.3
-Flask-MySQLdb 2.0.0
-Flask-WTF     1.2.2
