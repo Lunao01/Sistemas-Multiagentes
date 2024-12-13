@@ -85,8 +85,6 @@ def register():
         else:
             print("Las contraseñas no coinciden.")
 
-
-
         return redirect(url_for('login'))
 
     else: # Si es GET se renderiza la página register.html
@@ -98,8 +96,12 @@ def register():
 def menu():
     # Se debe comprobar si el usuario inició sesión (cookies)
     with Session(engine) as session:
-        stmt = select(User).join_from(User.id, Cookie.id).where(Cookie.id == request.cookies.get(SESSION))
-        user = session.scalar(stmt)
+        if request.cookies.get(SESSION) != None:
+            stmt = select(User).join(Cookie).where(Cookie.id == request.cookies.get(SESSION).encode())
+            user = session.scalar(stmt)
+        else:
+            user = None
+
     if user != None:
         return render_template('menu/menu.html')
     else:

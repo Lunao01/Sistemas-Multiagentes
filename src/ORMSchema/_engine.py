@@ -3,6 +3,9 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 
 assert load_dotenv(), "Failed to load .env file"
+
+# docker compose up --build
+
 DB_PASSWORD=getenv("DB_PASSWORD")
 DB_USER=getenv('DB_USER') if getenv('DB_USER') is not None else 'postgres' # default user
 

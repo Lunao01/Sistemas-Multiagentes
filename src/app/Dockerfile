@@ -2,7 +2,7 @@
 FROM python:3.9.20-alpine3.20
 
 # Copy all files and directories from the current directory
-COPY . /app 
+COPY  app /app 
 
 COPY ORMSchema /app/ORMSchema
 COPY .env /app/.env
@@ -16,7 +16,7 @@ COPY app/requirements.txt /requirements.txt
 RUN pip install --no-cache-dir -r /requirements.txt
 
 # Expose the port the app runs on
-EXPOSE 8000
+EXPOSE 5000
 
 # Run the application
-CMD ["flask", "run", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "app.py"]

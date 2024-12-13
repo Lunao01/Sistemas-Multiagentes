@@ -28,7 +28,7 @@ services:
       - fetcher
   frontend:
     ports:
-      - 80:80 # HOST:CONTAINER
+      - 80:5000 # HOST:CONTAINER
     build:
       context: .
       dockerfile: ./app/Dockerfile

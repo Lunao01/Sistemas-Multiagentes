@@ -1,7 +1,7 @@
 # Use the official Python image from the Docker Hub
 FROM python:3.9.20-alpine3.20
 
-COPY . /app
+COPY app /app
 
 COPY ORMSchema /app/ORMSchema
 COPY .env /app/.env
