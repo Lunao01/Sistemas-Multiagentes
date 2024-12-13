@@ -1,9 +1,11 @@
 from flask import Flask, render_template, request, redirect, url_for
 from config import config # archivo config.py
+from ORMSchema import engine, User
+from sqlalchemy.orm import Session
+from sqlalchemy import select
+import hashlib 
 
 app = Flask(__name__)
-
-# db = MySQL(app)
 
 # Nada más cargar la ruta raíz te reenvia a /login
 @app.route('/')
@@ -11,21 +13,91 @@ def index():
     return redirect(url_for('login'))
 
 
+# Login
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        print(request.form['username']) # username del formulario
-        print(request.form['password']) # password del formulario
-        return redirect(url_for('menu'))
+        user = request.form['username'] # username del formulario
+        password = request.form['password'] # password del formulario
+
+        # Se comprueba si el usuario existe y la contraseña es correcta
+        with Session(engine) as session:
+            stmt = select(User).where(User.username.is_(user)) # SELECT * FROM users WHERE username IS 'user';
+            db_user = session.scalar(stmt) 
+
+            
+        if db_user is None:
+            # Si el usuario no existe en la base de datos
+            print("Usuario no encontrado.")
+            return render_template('auth/login.html')
+        
+        else:
+            # Verificar la contraseña usando el hash almacenado
+            if db_user.password_hash == hashlib.sha512(password.encode()).digest():
+                print("Login exitoso.")
+                return redirect(url_for('menu'))
+            
+            else:
+                print("Contraseña incorrecta.")
+                return render_template('auth/login.html')
 
     else: # Si es GET se renderiza la página login.html
         return render_template('auth/login.html') # ruta de la plantilla html index
 
+
+# Register
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if request.method == 'POST':
+        user = request.form['username'] # username del formulario
+        password = request.form['password'] # password del formulario
+        password_repeat = request.form['password_repeat'] # password del formulario
+
+        if password == password_repeat:
+            with Session(engine) as session:
+                stmt = select(User).where(User.username.is_(user)) # SELECT * FROM users WHERE username IS 'user';
+                db_user = session.scalar(stmt) 
+
+                
+                if db_user is None:
+                    # Si el usuario no existe en la base de datos crea el usuario
+                    print("Cuenta creada.")
+                    new_user = User(username = user, password_hash = hashlib.sha512(password.encode()).digest())
+                    session.add(new_user)
+                    session.commit()
+                
+                else:
+                    print("El usuario ya existe.")
+        else:
+            print("Las contraseñas no coinciden.")
+
+
+
+        return redirect(url_for('login'))
+
+    else: # Si es GET se renderiza la página register.html
+        return render_template('auth/register.html') # ruta de la plantilla html index
+
+
+# Menú principal
 @app.route('/menu')
 def menu():
     return render_template('menu/menu.html')
 
 
+# Jugar
+@app.route('/menu/play')
+def play():
+    return render_template('play/play.html')
+
+
+# Pokedex
+@app.route('/menu/pokedex')
+def pokedex():
+    return render_template('pokedex/pokedex.html')
+
+
+# main
 if __name__ == '__main__':
     app.config.from_object(config['development']) # usar configuración del diccionario definido en config.py
     app.run()

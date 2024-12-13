@@ -2,6 +2,7 @@ services:
   db:
     image: postgres:15-alpine
     environment:
+      - POSTGRES_USER=${DB_USER}
       - POSTGRES_PASSWORD=${DB_PASSWORD}
     volumes: 
       - db_data:/var/lib/postgresql/data
@@ -29,7 +30,7 @@ services:
     ports:
       - 80:80 # HOST:CONTAINER
     build:
-      context: ./Frontend/
+      context: ./app/
       dockerfile: ./Dockerfile
     depends_on: 
       - db

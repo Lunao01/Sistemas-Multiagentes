@@ -1,0 +1,32 @@
+{% extends "./base.html" %}
+
+{% block title %}Pokédex - PokeQuest{% endblock %}
+
+{% block customCSS %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pokedex_styles.css')}}">
+{% endblock %}
+
+{% block body %}
+    <header>
+        <h1>Pokédex</h1>
+        <div class="sort-container">
+            <label for="sort-select">Ordenar por:</label>
+            <select id="sort-select">
+                <option value="number-asc">Número inferior</option>
+                <option value="number-desc">Número superior</option>
+                <option value="name-asc">A-Z</option>
+                <option value="name-desc">Z-A</option>
+            </select>
+        </div>
+    </header>
+    <main>
+        <section id="pokedex-grid" class="pokedex-grid">
+            <!-- Aquí se agregarán dinámicamente los Pokémon -->
+        </section>
+        <button id="load-more" class="load-more">Cargar más</button>
+    </main>
+    <footer>
+        <p>© 2024 - PokeQuest</p>
+    </footer>
+    <script src="{{ url_for('static', filename='js/pokedex.js') }}"></script>
+{% endblock %}
