@@ -1,11 +1,14 @@
 from flask import Flask, render_template, request, redirect, url_for
 from config import config # archivo config.py
-from ORMSchema import engine, User
+from ORMSchema import engine, User, Cookie
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 import hashlib 
+import base64
+import os
 
 app = Flask(__name__)
+SESSION = "session"
 
 # Nada más cargar la ruta raíz te reenvia a /login
 @app.route('/')
@@ -35,7 +38,18 @@ def login():
             # Verificar la contraseña usando el hash almacenado
             if db_user.password_hash == hashlib.sha512(password.encode()).digest():
                 print("Login exitoso.")
-                return redirect(url_for('menu'))
+                cookie = base64.b64encode(os.urandom(66))
+
+                with Session(engine) as session:
+                    # Guardar cookie
+                    db_user = session.scalar(stmt)
+                    db_user.cookies.append(Cookie(id = cookie)) # session.scalar(stmt) = db_user
+                    session.commit()
+
+                # Asignamos la cookie a la sesión actual
+                response = redirect(url_for('menu')) 
+                response.set_cookie(SESSION, cookie.decode())
+                return response
             
             else:
                 print("Contraseña incorrecta.")
@@ -82,19 +96,34 @@ def register():
 # Menú principal
 @app.route('/menu')
 def menu():
-    return render_template('menu/menu.html')
+    # Se debe comprobar si el usuario inició sesión (cookies)
+    with Session(engine) as session:
+        stmt = select(User).join_from(User.id, Cookie.id).where(Cookie.id == request.cookies.get(SESSION))
+        user = session.scalar(stmt)
+    if user != None:
+        return render_template('menu/menu.html')
+    else:
+        return redirect(url_for('login'))
 
 
 # Jugar
 @app.route('/menu/play')
 def play():
-    return render_template('play/play.html')
+    # Se debe comprobar si el usuario inició sesión (cookies)
+    if True:
+        return render_template('play/play.html')
+    else:
+        return redirect(url_for('login'))
 
 
 # Pokedex
 @app.route('/menu/pokedex')
 def pokedex():
-    return render_template('pokedex/pokedex.html')
+    # Se debe comprobar si el usuario inició sesión (cookies)
+    if True:
+        return render_template('pokedex/pokedex.html')
+    else:
+        return redirect(url_for('login'))
 
 
 # main

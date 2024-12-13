@@ -32,5 +32,6 @@ class User(Base):
 
 
 class Cookie(Base):
-    id: Mapped[bytes] = mapped_column(primary_key=True)
+    __tablename__ = "cookies"
+    id: Mapped[bytes] = mapped_column(String(88), primary_key=True)
     user: Mapped[int] = mapped_column(Integer(), ForeignKey("users.id"))
