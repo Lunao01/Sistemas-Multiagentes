@@ -140,6 +140,24 @@ def pokedex():
         return render_template('pokedex/pokedex.html')
     else:
         return redirect(url_for('login'))
+    
+
+
+# Ranking
+@app.route('/menu/ranking')
+def ranking():
+    # Se debe comprobar si el usuario inició sesión (cookies)
+    with Session(engine) as session:
+        if request.cookies.get(SESSION) != None:
+            stmt = select(User).join(Cookie).where(Cookie.id == request.cookies.get(SESSION).encode())
+            user = session.scalar(stmt)
+        else:
+            user = None
+
+    if user != None:
+        return render_template('ranking/ranking.html')
+    else:
+        return redirect(url_for('login'))
 
 
 # main

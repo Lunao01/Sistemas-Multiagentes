@@ -42,7 +42,8 @@
     });
 
     document.getElementById("pokedexBtn").addEventListener("click", function() {
-      window.location.href = "{{ url_for('pokedex') }}";  // Redirige a la ruta de Pokedex
+      // Redirige a la ruta de Pokedex
+      window.location.href = "{{ url_for('pokedex') }}";
   });
 </script>
 {% endblock %}
