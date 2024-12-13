@@ -112,7 +112,14 @@ def menu():
 @app.route('/menu/play')
 def play():
     # Se debe comprobar si el usuario inició sesión (cookies)
-    if True:
+    with Session(engine) as session:
+        if request.cookies.get(SESSION) != None:
+            stmt = select(User).join(Cookie).where(Cookie.id == request.cookies.get(SESSION).encode())
+            user = session.scalar(stmt)
+        else:
+            user = None
+
+    if user != None:
         return render_template('play/play.html')
     else:
         return redirect(url_for('login'))
@@ -122,7 +129,14 @@ def play():
 @app.route('/menu/pokedex')
 def pokedex():
     # Se debe comprobar si el usuario inició sesión (cookies)
-    if True:
+    with Session(engine) as session:
+        if request.cookies.get(SESSION) != None:
+            stmt = select(User).join(Cookie).where(Cookie.id == request.cookies.get(SESSION).encode())
+            user = session.scalar(stmt)
+        else:
+            user = None
+
+    if user != None:
         return render_template('pokedex/pokedex.html')
     else:
         return redirect(url_for('login'))
