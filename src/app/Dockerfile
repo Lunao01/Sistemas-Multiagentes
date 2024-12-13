@@ -4,14 +4,14 @@ FROM python:3.9.20-alpine3.20
 # Copy all files and directories from the current directory
 COPY . /app 
 
-COPY ../ORMSchema /app/ORMSchema
-COPY ../.env /app/.env
+COPY ORMSchema /app/ORMSchema
+COPY .env /app/.env
 
 # Set the working directory to /app
 WORKDIR /app
 
 # Install the required packages
-COPY requirements.txt /requirements.txt
+COPY app/requirements.txt /requirements.txt
 
 RUN pip install --no-cache-dir -r /requirements.txt
 

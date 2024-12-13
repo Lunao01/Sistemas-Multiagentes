@@ -8,8 +8,8 @@ services:
       - db_data:/var/lib/postgresql/data
   fetcher:
     build:
-      context: ./Fetcher
-      dockerfile: ./Dockerfile
+      context: .
+      dockerfile: ./Fetcher/Dockerfile
     volumes: 
       - ../dataset:/dataset:ro # FIXME REMOVE THE COMMENT BEFORE UPLOAD TO MOODLE This is a bit hacky
       - img:/img
@@ -19,8 +19,8 @@ services:
     ports:
       - 8000:8000
     build:
-      context: ./REST_API
-      dockerfile: ./Dockerfile
+      context: .
+      dockerfile: ./REST_API/Dockerfile
     volumes: 
       - img:/img
     depends_on:
@@ -30,9 +30,9 @@ services:
     ports:
       - 80:80 # HOST:CONTAINER
     build:
-      context: ./app/
-      dockerfile: ./Dockerfile
-    depends_on: 
+      context: .
+      dockerfile: ./app/Dockerfile
+    depends_on:
       - db
       - rest_api
 
