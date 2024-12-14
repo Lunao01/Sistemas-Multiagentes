@@ -41,10 +41,15 @@
 
     document.getElementById("pokedexBtn").addEventListener("click", function() {
       window.location.href = "{{ url_for('pokedex') }}"; // Redirige a la ruta de Pokedex
-  });
+    });
+
+    document.getElementById("rankingBtn").addEventListener("click", function() {
+      window.location.href = "{{ url_for('ranking') }}";  // Redirige a la ruta Ranking
+    });
+    
     document.getElementById("exitBtn").addEventListener("click", function() {
       window.location.href = "{{ url_for('login') }}";  // Redirige al login
-});
+    });
 </script>
 {% endblock %}
 

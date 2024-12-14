@@ -182,9 +182,15 @@ def ranking():
         {'username': 'Misty', 'high_score': 1400},
         {'username': 'Brock', 'high_score': 1350},
         {'username': 'GaryOak', 'high_score': 1300},
+        {'username': 'PikachuFan', 'high_score': 1250},
+        {'username': 'AshKetchum', 'high_score': 1500},
+        {'username': 'Misty', 'high_score': 1400},
+        {'username': 'Brock', 'high_score': 1350},
+        {'username': 'GaryOak', 'high_score': 1300},
         {'username': 'PikachuFan', 'high_score': 1250},]
         user_ranking = 42 
-        return render_template('ranking/ranking.html', top_users=top_users, user_ranking=user_ranking)
+        user_high_score = 1000
+        return render_template('ranking/ranking.html', top_users=top_users, user_ranking=user_ranking, user_high_score=user_high_score)
     else:
         return redirect(url_for('login'))
 
