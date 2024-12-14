@@ -136,8 +136,9 @@ def play():
                 pass
             elif question_type == "abilities":
                 pass
+            print(question_type)
             
-            return render_template('play/play.html', question_text = question_text, question_key = question_key, question_type = question_type, pokemon_1 = pokemon_1, pokemon_2 = pokemon_2)
+            return render_template('play/play.html')#, question_text = question_text, question_key = question_key, question_type = question_type, pokemon_1 = pokemon_1, pokemon_2 = pokemon_2)
         
 
         if request.method == 'POST':
