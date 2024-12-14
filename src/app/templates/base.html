@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{%- set activateErrPopupJS = false %}
 {% macro err_popup() %}
 {% if message is defined %}  <!-- action para cuando se pulsa el botón enviar el formulario -->
     <!-- El Popup -->
@@ -9,6 +10,7 @@
         <p>{{message}}</p>
     </div>
   </div>
+  {%- set activateErrPopupJS = true %}
 {% endif %}
 {% endmacro %}
 <html lang="en">
@@ -25,5 +27,6 @@
 <body>
     {% block body %}
     {% endblock %}
+<script src="{{ url_for('static', filename='js/errorPopup.js')}}"></script>
 </body>
 </html>
