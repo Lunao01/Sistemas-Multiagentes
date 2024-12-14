@@ -6,6 +6,7 @@ from sqlalchemy import select
 import hashlib 
 import base64
 import os
+import question_generator 
 
 app = Flask(__name__)
 SESSION = "session"
@@ -32,7 +33,7 @@ def login():
         if db_user is None:
             # Si el usuario no existe en la base de datos
             # print("Usuario no encontrado.")
-            return render_template('auth/login.html', message="Usuario no encontrado.")
+            return render_template('auth/login.html', message="User not found.")
         
         else:
             # Verificar la contraseña usando el hash almacenado
@@ -53,7 +54,7 @@ def login():
                 return response
             
             else:
-                return render_template('auth/login.html', message="Contraseña incorrecta.")
+                return render_template('auth/login.html', message="Incorrect password.")
 
     else: # Si es GET se renderiza la página login.html
         return render_template('auth/login.html') # ruta de la plantilla html index
@@ -79,12 +80,12 @@ def register():
                     new_user = User(username = user, password_hash = password_hash)
                     session.add(new_user)
                     session.commit()
-                    print("Cuenta creada.")
+                    # print("Cuenta creada.")
                 
                 else:
-                    print("El usuario ya existe.")
+                    return render_template('auth/login.html', message="The user already exists.")
         else:
-            print("Las contraseñas no coinciden.")
+            return render_template('auth/login.html', message="The passwords do not match.")
 
         return redirect(url_for('login'))
 
@@ -110,7 +111,7 @@ def menu():
 
 
 # Jugar
-@app.route('/menu/play')
+@app.route('/menu/play', methods=['GET', 'POST'])
 def play():
     # Se debe comprobar si el usuario inició sesión (cookies)
     with Session(engine) as session:
@@ -120,8 +121,18 @@ def play():
         else:
             user = None
 
+    # GET/POST
     if user != None:
-        return render_template('play/play.html')
+        # Se genera la pregunta
+        #question = question_generator.generate_question()
+
+        if request.method == 'GET':
+            return render_template('play/play.html')
+        
+
+        if request.method == 'POST':
+            return render_template('play/play.html')
+    
     else:
         return redirect(url_for('login'))
 
