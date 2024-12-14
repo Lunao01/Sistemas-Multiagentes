@@ -25,20 +25,21 @@ def login():
 
         # Se comprueba si el usuario existe y la contraseña es correcta
         with Session(engine) as session:
-            stmt = select(User).where(User.username.is_(user)) # SELECT * FROM users WHERE username IS 'user';
+            stmt = select(User).where(User.username == user) # SELECT * FROM users WHERE username = 'user';
             db_user = session.scalar(stmt) 
 
             
         if db_user is None:
             # Si el usuario no existe en la base de datos
-            print("Usuario no encontrado.")
-            return render_template('auth/login.html')
+            # print("Usuario no encontrado.")
+            return render_template('auth/login.html', message="Usuario no encontrado.")
         
         else:
             # Verificar la contraseña usando el hash almacenado
-            if db_user.password_hash == hashlib.sha512(password.encode()).digest():
-                print("Login exitoso.")
-                cookie = base64.b64encode(os.urandom(66))
+            password_hash = hash_gen(password)
+            if db_user.password_hash == password_hash:
+                # print("Login exitoso.")
+                cookie = base64.b64encode(os.urandom(66)).decode()
 
                 with Session(engine) as session:
                     # Guardar cookie
@@ -48,12 +49,11 @@ def login():
 
                 # Asignamos la cookie a la sesión actual
                 response = redirect(url_for('menu')) 
-                response.set_cookie(SESSION, cookie.decode())
+                response.set_cookie(SESSION, cookie)
                 return response
             
             else:
-                print("Contraseña incorrecta.")
-                return render_template('auth/login.html')
+                return render_template('auth/login.html', message="Contraseña incorrecta.")
 
     else: # Si es GET se renderiza la página login.html
         return render_template('auth/login.html') # ruta de la plantilla html index
@@ -69,16 +69,17 @@ def register():
 
         if password == password_repeat:
             with Session(engine) as session:
-                stmt = select(User).where(User.username.is_(user)) # SELECT * FROM users WHERE username IS 'user';
+                stmt = select(User).where(User.username == user) # SELECT * FROM users WHERE username = 'user';
                 db_user = session.scalar(stmt) 
 
                 
                 if db_user is None:
                     # Si el usuario no existe en la base de datos crea el usuario
-                    print("Cuenta creada.")
-                    new_user = User(username = user, password_hash = hashlib.sha512(password.encode()).digest())
+                    password_hash = hash_gen(password)
+                    new_user = User(username = user, password_hash = password_hash)
                     session.add(new_user)
                     session.commit()
+                    print("Cuenta creada.")
                 
                 else:
                     print("El usuario ya existe.")
@@ -97,7 +98,7 @@ def menu():
     # Se debe comprobar si el usuario inició sesión (cookies)
     with Session(engine) as session:
         if request.cookies.get(SESSION) != None:
-            stmt = select(User).join(Cookie).where(Cookie.id == request.cookies.get(SESSION).encode())
+            stmt = select(User).join(Cookie).where(Cookie.id == request.cookies.get(SESSION))
             user = session.scalar(stmt)
         else:
             user = None
@@ -114,7 +115,7 @@ def play():
     # Se debe comprobar si el usuario inició sesión (cookies)
     with Session(engine) as session:
         if request.cookies.get(SESSION) != None:
-            stmt = select(User).join(Cookie).where(Cookie.id == request.cookies.get(SESSION).encode())
+            stmt = select(User).join(Cookie).where(Cookie.id == request.cookies.get(SESSION))
             user = session.scalar(stmt)
         else:
             user = None
@@ -131,7 +132,7 @@ def pokedex():
     # Se debe comprobar si el usuario inició sesión (cookies)
     with Session(engine) as session:
         if request.cookies.get(SESSION) != None:
-            stmt = select(User).join(Cookie).where(Cookie.id == request.cookies.get(SESSION).encode())
+            stmt = select(User).join(Cookie).where(Cookie.id == request.cookies.get(SESSION))
             user = session.scalar(stmt)
         else:
             user = None
@@ -149,7 +150,7 @@ def ranking():
     # Se debe comprobar si el usuario inició sesión (cookies)
     with Session(engine) as session:
         if request.cookies.get(SESSION) != None:
-            stmt = select(User).join(Cookie).where(Cookie.id == request.cookies.get(SESSION).encode())
+            stmt = select(User).join(Cookie).where(Cookie.id == request.cookies.get(SESSION))
             user = session.scalar(stmt)
         else:
             user = None
@@ -158,6 +159,11 @@ def ranking():
         return render_template('ranking/ranking.html')
     else:
         return redirect(url_for('login'))
+
+
+# Generate a hash
+def hash_gen(n:str)->str:
+  return base64.b16encode(hashlib.sha512(n.encode()).digest()).decode()
 
 
 # main

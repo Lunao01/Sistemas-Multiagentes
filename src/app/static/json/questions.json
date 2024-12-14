@@ -1,0 +1,132 @@
+{
+    "questions": [
+      {
+        "question": "Which Pokémon has more height?",
+        "key": "height",
+        "type": "compare",
+        "condition": "more"
+      },
+      {
+        "question": "Which Pokémon has less height?",
+        "key": "height",
+        "type": "compare",
+        "condition": "less"
+      },
+      {
+        "question": "Which Pokémon weighs more?",
+        "key": "weight",
+        "type": "compare",
+        "condition": "more"
+      },
+      {
+        "question": "Which Pokémon weighs less?",
+        "key": "weight",
+        "type": "compare",
+        "condition": "less"
+      },
+      {
+        "question": "Which Pokémon is a Legendary?",
+        "key": "legendary",
+        "type": "choice"
+      },
+      {
+        "question": "Which Pokémon is a Mythical?",
+        "key": "is_mythical",
+        "type": "choice"
+      },
+      {
+        "question": "Which Pokémon has the highest HP?",
+        "key": "hp",
+        "type": "compare",
+        "condition": "more"
+      },
+      {
+        "question": "Which Pokémon has the lowest HP?",
+        "key": "hp",
+        "type": "compare",
+        "condition": "less"
+      },
+      {
+        "question": "Which Pokémon has the highest Attack?",
+        "key": "attack",
+        "type": "compare",
+        "condition": "more"
+      },
+      {
+        "question": "Which Pokémon has the lowest Attack?",
+        "key": "attack",
+        "type": "compare",
+        "condition": "less"
+      },
+      {
+        "question": "Which Pokémon has the highest Defense?",
+        "key": "defense",
+        "type": "compare",
+        "condition": "more"
+      },
+      {
+        "question": "Which Pokémon has the lowest Defense?",
+        "key": "defense",
+        "type": "compare",
+        "condition": "less"
+      },
+      {
+        "question": "Which Pokémon has the highest Special Attack?",
+        "key": "special-attack",
+        "type": "compare",
+        "condition": "more"
+      },
+      {
+        "question": "Which Pokémon has the lowest Special Attack?",
+        "key": "special-attack",
+        "type": "compare",
+        "condition": "less"
+      },
+      {
+        "question": "Which Pokémon has the highest Special Defense?",
+        "key": "special-defense",
+        "type": "compare",
+        "condition": "more"
+      },
+      {
+        "question": "Which Pokémon has the lowest Special Defense?",
+        "key": "special-defense",
+        "type": "compare",
+        "condition": "less"
+      },
+      {
+        "question": "Which Pokémon has the highest Speed?",
+        "key": "speed",
+        "type": "compare",
+        "condition": "more"
+      },
+      {
+        "question": "Which Pokémon has the lowest Speed?",
+        "key": "speed",
+        "type": "compare",
+        "condition": "less"
+      },
+      {
+        "question": "Which Pokémon has the highest capture rate?",
+        "key": "capture_rate",
+        "type": "compare",
+        "condition": "more"
+      },
+      {
+        "question": "Which Pokémon has the lowest capture rate?",
+        "key": "capture_rate",
+        "type": "compare",
+        "condition": "less"
+      },
+      {
+        "question": "What Pokémon is a {X} type?",
+        "key": "types",
+        "type": "specific"
+      },
+      {
+        "question": "Which Pokémon can have the ability {X}?",
+        "key": "abilities",
+        "type": "specific"
+      }
+    ]
+  }

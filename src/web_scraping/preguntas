@@ -1,0 +1,81 @@
+height
+--------
+Which Pokémon has more height? ✅ 
+Which Pokémon has less height? ✅ 
+
+
+weight
+--------
+Which Pokémon weighs more? ✅ 
+Which Pokémon weighs less? ✅ 
+
+
+legendary 
+--------
+Which Pokémon is a Legendary? ✅ 
+
+
+is_mythical
+--------
+Which Pokémon is a Mythical? ✅ 
+
+
+types
+--------
+What Pokémon is a x type? ✅ 
+
+Ej: What Pokémon is a water type?
+Ej: What Pokémon is a water-fire type?
+
+
+capture_rate
+--------
+Which Pokémon has the highest capture rate?✅ 
+Which Pokémon has the lowest capture rate?✅ 
+
+
+abilities
+--------
+Which Pokémon can have the ability X?:✅ 
+
+Ej:Which Pokémon can have the ability Fly?
+
+
+
+
+
+
+hp
+--------
+Which Pokémon has the highest HP? ✅
+Which Pokémon has the lowest HP? ✅
+
+
+attack
+--------
+Which Pokémon has the highest Attack?✅
+Which Pokémon has the lowest Attack?✅
+
+
+defense
+--------
+Which Pokémon has the highest Defense?✅
+Which Pokémon has the lowest Defense?✅
+
+
+special-attack:
+--------
+Which Pokémon has the highest Special Attack?✅
+Which Pokémon has the lowest Special Attack?✅
+
+
+special-defense:
+--------
+Which Pokémon has the highest Special Defense?✅
+Which Pokémon has the lowest Special Defense?✅
+
+
+speed:
+--------
+Which Pokémon has the highest Speed?✅
+Which Pokémon has the lowest Speed?✅
