@@ -35,7 +35,7 @@ class Pokemon(Base):
     base_happiness: Mapped[int] = mapped_column(Integer())
     abilities: Mapped[List["Ability"]] = relationship(cascade="all, delete-orphan")
     forms: Mapped[List["Form"]] = relationship(cascade="all, delete-orphan")
-    held_items: Mapped[Boolean] = mapped_column(Boolean())
+    held_items: Mapped[bool] = mapped_column(Boolean())
     moves: Mapped[List["Move"]] = relationship(cascade="all, delete-orphan")
     types: Mapped[List["Type"]] = relationship(cascade="all, delete-orphan")
     hp: Mapped[int] = mapped_column(Integer())
