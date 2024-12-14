@@ -83,9 +83,9 @@ def register():
                     # print("Cuenta creada.")
                 
                 else:
-                    return render_template('auth/login.html', message="The user already exists.")
+                    return render_template('auth/register.html', message="The user already exists.")
         else:
-            return render_template('auth/login.html', message="The passwords do not match.")
+            return render_template('auth/register.html', message="The passwords do not match.")
 
         return redirect(url_for('login'))
 
