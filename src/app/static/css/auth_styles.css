@@ -220,7 +220,7 @@ button:hover {
 /* Estilos para el contenido del popup */
 .popup-content {
     position: absolute;
-    background-color: rgb(255, 0, 0);
+    background-color: #F04242;
     padding: 20px;
     border-radius: 5px;
     text-align: center;
