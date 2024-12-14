@@ -19,4 +19,4 @@ EXPOSE 8000
 # We will run this app like this, to run 2 programs in the container:
 # * 1 for scanning the database, and watching changes there or something
 # * the other, for running fastapi for fetching images from the internet as needed
-CMD ["sh", "/app/main.sh"]
+CMD ["python", "/app/datasetscan.py"]

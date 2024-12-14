@@ -2,50 +2,18 @@ from typing import List
 import enum
 from sqlalchemy import Enum, Integer, Boolean, ForeignKey, UnicodeText
 from sqlalchemy.orm import DeclarativeBase, Mapped, relationship, mapped_column
-from pydantic import BaseModel
-
 
 class GrowthRate(enum.Enum):
-    slow = 1
-    medium_slow = 2
-    medium = 3
-    fast = 4
-    slow_then_very_fast = 5
+    slow = "slow"
+    medium_slow = "medium-slow"
+    medium = "medium"
+    fast = "fast"
+    slow_then_very_fast = "slow-then-very-fast"
+    fast_then_very_slow = "fast-then-very-slow"
 
 
 class Base(DeclarativeBase):
     pass
-
-class PokemonResponse(BaseModel):
-    def __init__(self, p: "Pokemon"):
-        self.id: int = p.id
-        self.name: str = p.name
-        self.base_experience: int = p.base_experience
-        self.height: int = p.height
-        self.weight: int = p.weight
-        self.is_default: bool = p.is_default
-        self.order: int = p.order
-        self.habitat: List[str] = [i.habitat for i in p.habitat]
-        self.growth_rate: GrowthRate = p.growth_rate
-        self.is_legendary: bool = p.is_legendary
-        self.is_mythical: bool = p.is_mythical
-        self.gender_rate: int = p.gender_rate
-
-        self.capture_rate: int = p.capture_rate
-        self.base_happiness: int = p.base_happiness
-        self.abilities: List[str] = [i.ability for i in p.abilities]
-        self.forms: List[str] = [i.form for i in p.forms]
-        self.held_items: bool = p.held_items
-        self.moves: List[str] = [i.move for i in p.moves]
-        self.types: List[str] = [i.type for i in p.types]
-        self.hp: int = p.hp
-        self.attack: int = p.attack
-        self.defense: int = p.defense
-        self.special_attack: int = p.special_attack
-        self.special_defense: int = p.special_defense
-        self.speed: int = p.speed
-        self.evolution: str = p.evolution
-        self.evolution_level: int = p.evolution_level
 
 
 class Pokemon(Base):
@@ -64,7 +32,7 @@ class Pokemon(Base):
     gender_rate: Mapped[int] = mapped_column(Integer())
 
     capture_rate: Mapped[int] = mapped_column(Integer())
-    base_happiness: Mapped[int] = mapped_column(Integer())
+    base_happiness: Mapped[int] = mapped_column(Integer(), nullable=True)
     abilities: Mapped[List["Ability"]] = relationship(cascade="all, delete-orphan")
     forms: Mapped[List["Form"]] = relationship(cascade="all, delete-orphan")
     held_items: Mapped[bool] = mapped_column(Boolean())
