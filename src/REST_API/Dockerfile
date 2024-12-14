@@ -1,7 +1,7 @@
 # Use the official Python image from the Docker Hub
 FROM python:3.9.20-alpine3.20
 
-COPY app /app
+COPY REST_API /app
 
 COPY ORMSchema /app/ORMSchema
 COPY .env /app/.env
@@ -17,4 +17,4 @@ RUN pip install --no-cache-dir -r /requirements.txt
 EXPOSE 8000
 
 # Run the application
-CMD ["fastapi", "run", "main.py"]
+CMD ["fastapi", "run", "main.py", "--host", "0.0.0.0"]
