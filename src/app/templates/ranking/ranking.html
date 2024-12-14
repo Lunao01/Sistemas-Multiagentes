@@ -3,8 +3,36 @@
 {% block title %}Pokédex - PokeQuest{% endblock %}
 
 {% block customCSS %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/pokedex_styles.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/ranking_styles.css')}}">
 {% endblock %}
+  <div class="container">
+    <div class="ranking">
+        <table class="ranking-table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>User</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for user in top_users %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ user.username }}</td>
+                    <td>{{ user.high_score }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="your-ranking">
+          Your Ranking: {{ user_ranking }}
+        </div>
+    </div>
 
+    <div class="image-container">
+        <img src="./static/img/ranking_icon.png" alt="Ranking Image">
+    </div>
+  </div>
 {% block body %}
 {% endblock %}

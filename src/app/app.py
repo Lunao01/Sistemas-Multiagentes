@@ -123,21 +123,21 @@ def play():
 
     # GET/POST
     if user != None:
-        # Se genera la pregunta
-        question = question_generator.generate_question()
-        question_text = question.question
-        question_key = question.key
-        question_type = question.type
-
-        if question_type == "compare":
-            pass
-        elif question_type == "choice":
-            pass
-        elif question_type == "abilities":
-            pass
-
         if request.method == 'GET':
-            return render_template('play/play.html')
+            # Se genera la pregunta
+            question = question_generator.generate_question()
+            question_text = question.question
+            question_key = question.key
+            question_type = question.type
+
+            if question_type == "compare":
+                pass
+            elif question_type == "choice":
+                pass
+            elif question_type == "abilities":
+                pass
+            
+            return render_template('play/play.html', question_text = question_text, question_key = question_key, question_type = question_type, pokemon_1 = pokemon_1, pokemon_2 = pokemon_2)
         
 
         if request.method == 'POST':
