@@ -124,7 +124,17 @@ def play():
     # GET/POST
     if user != None:
         # Se genera la pregunta
-        #question = question_generator.generate_question()
+        question = question_generator.generate_question()
+        question_text = question.question
+        question_key = question.key
+        question_type = question.type
+
+        if question_type == "compare":
+            pass
+        elif question_type == "choice":
+            pass
+        elif question_type == "abilities":
+            pass
 
         if request.method == 'GET':
             return render_template('play/play.html')
