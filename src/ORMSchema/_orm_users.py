@@ -16,6 +16,7 @@ class Score(Base):
     __tablename__ = "scores"
     id: Mapped[int] = mapped_column(primary_key=True)
     score: Mapped[int] = mapped_column(Integer())
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
 
 class User(Base):

@@ -1,74 +1,149 @@
 body {
-    font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0;
-    background-color: #f8f9fa;
+    font-family: Arial, sans-serif;
+    background-color: #fff;
 }
 
 .container {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 20px;
-}
-
-.ranking {
-    flex: 1;
-    margin-right: 20px;
-}
-
-.ranking-table {
+    height: 100vh;
     width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-    background-color: #ffffff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: relative;
 }
 
-.ranking-table th, .ranking-table td {
-    border: 1px solid #dee2e6;
-    padding: 10px;
+/* Estilo del logo */
+.logo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
     text-align: left;
 }
 
-.ranking-table th {
-    background-color: #007bff;
-    color: white;
+.logo img {
+    max-width: 170px;
+    height: auto;
 }
 
-.ranking-table tr:nth-child(even) {
-    background-color: #f2f2f2;
+/* Menú lateral izquierdo */
+.menu {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centra el contenido verticalmente */
+    align-items: center;
+    width: 30%;
+    min-width: 280px;
+    padding: 20px 0;
+    position: relative; /* Necesario para mantener el logo en posición */
+    background: none;
 }
 
-.your-ranking {
-    font-size: 18px;
-    color: #343a40;
+/* Tabla del Ranking */
+.menu-table {
+    width: 100%;
+    margin-top: 30px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0px 6px 15px rgba(255, 69, 69, 0.3);
+}
+
+th, td {
+    padding: 12px 15px;
     text-align: center;
+    font-size: 1.2rem;
+    color: #fff;
 }
 
-.image-container {
-    flex: 0.4;
+th {
+    background: linear-gradient(145deg, #ff4545, #c00000);
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+}
+
+td {
+    background-color: #ff6666;
+    border-bottom: 2px solid #c00000;
+}
+
+tr:nth-child(even) td {
+    background-color: #ff7f7f;
+}
+
+tr:hover td {
+    background-color: #ff8888;
+}
+
+/* Menú superior derecho */
+.pokemon-display {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-grow: 1;
+    overflow: hidden;
 }
 
-.image-container img {
-    max-width: 100%;
-    max-height: 400px;
-    border-radius: 10px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+.pokemon-img {
+    max-width: 70%;
+    height: auto;
+    max-height: 80vh;
 }
 
+.top-menu {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    display: flex;
+    gap: 20px;
+}
+
+.icon {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.icon:hover {
+    opacity: 0.8;
+    transform: scale(1.1);
+}
+
+/* Responsivo */
 @media (max-width: 768px) {
-    .container {
-        flex-direction: column;
-        align-items: center;
+    .menu {
+        width: 100%;
+        flex-direction: row;
+        justify-content: space-around;
+        height: auto;
+        padding: 10px 0;
     }
 
-    .ranking {
-        margin-right: 0;
-        margin-bottom: 20px;
+    .logo img {
+        max-width: 60%;
+    }
+
+    .menu-btn {
+        padding: 15px 20px;
+        font-size: 1.5rem;
+    }
+
+    .pokemon-display {
+        padding-top: 20px;
+    }
+
+    .top-menu {
+        position: static;
+        justify-content: center;
+    }
+
+    table {
+        font-size: 1rem;
     }
 }
+
+  
