@@ -10,6 +10,7 @@ import question_generator
 
 app = Flask(__name__)
 SESSION = "session"
+POINTS = 0 # Guardar el puntaje del usuario en la partida
 
 # Nada más cargar la ruta raíz te reenvia a /login
 @app.route('/')
@@ -105,6 +106,8 @@ def menu():
             user = None
 
     if user != None:
+        global POINTS 
+        POINTS = 0 # se actualiza los puntos del usuario a 0
         return render_template('menu/menu.html')
     else:
         return redirect(url_for('login'))
@@ -138,10 +141,12 @@ def play():
                 pass
             print(question_type)
             
-            return render_template('play/play.html')#, question_text = question_text, question_key = question_key, question_type = question_type, pokemon_1 = pokemon_1, pokemon_2 = pokemon_2)
+            return render_template('play/play.html', question_text = question_text, question_key = question_key, question_type = question_type, name_pokemon_1 = name_pokemon_1, name_pokemon_2 = name_pokemon_2, img_pokemon_1 = img_pokemon_1, img_pokemon_2 = img_pokemon_2, score = POINTS)
         
 
         if request.method == 'POST':
+            
+            
             return render_template('play/play.html')
     
     else:

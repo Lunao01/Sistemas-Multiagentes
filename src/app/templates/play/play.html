@@ -11,28 +11,49 @@
   <div class="container">
     <!-- Pregunta en la parte superior -->
     <div class="question">
-        Which Pokémon has the highest Special Attack?
+        {{ question_text }}
     </div>
 
     <!-- Contenedor de botones con imágenes de Pokémon -->
     <div class="buttons-container">
-      <button class="pokemon-btn">
-        <img src="https://assets.pokemon.com/assets/cms2/img/pokedex/full/350.png" alt="Charmander">
+      <button class="pokemon-1-btn">
+        <img src={{ pokemon_1 }} alt= "Pokemon_1">
       </button>
 
-      <button class="pokemon-btn">
-        <img src="https://assets.pokemon.com/assets/cms2/img/pokedex/full/103.png" alt="Squirtle">
+      <button class="pokemon-2-btn">
+        <img src={{ pokemon_2 }} alt="Pokemon_2">
       </button>
     </div>
 
     <!-- Score en la parte inferior derecha -->
     <div class="score">
-      Score = 0
+      Score = {{ score }}
     </div>
 
     <!-- Menú superior derecho -->
     <div class="top-menu">
-        <img src="https://img.icons8.com/ios-filled/50/000000/delete-sign.png" alt="Cross" class="icon">
+        <img id="exitBtn" src="https://img.icons8.com/ios-filled/50/000000/delete-sign.png" alt="Cross" class="icon">
     </div>
   </div>
+  <script> 
+    const questionKey = "{{ question_key }}"
+
+
+    // Eventos para cada posible opción (pokémon 1 vs pokémon 2)
+    document.getElementById("pokemon-1-btn").addEventListener("click", function() {
+        window.location.href = "{{ url_for('play') }}" + 
+            "?question_key=" + question_key  + 
+            "&pokemon1=" + encodeURIComponent(pokemon1) + 
+            "&pokemon2=" + encodeURIComponent(pokemon2);
+    });
+
+    document.getElementById("pokemon-2-btn").addEventListener("click", function() {
+      window.location.href = "{{ url_for('play') }}";
+    });
+
+    // Salir del modo juego
+    document.getElementById("exitBtn").addEventListener("click", function() {
+      window.location.href = "{{ url_for('menu') }}";
+    });
+</script>
 {% endblock %}
