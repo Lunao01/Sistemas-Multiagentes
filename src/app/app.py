@@ -133,7 +133,7 @@ def play():
     # GET/POST
     if user != None:
         if request.method == 'GET':
-            play_get(user_id) # cant be unbound, since if user != none implies that conditional in line 126 was run
+            return play_get(user_id) # cant be unbound, since if user != none implies that conditional in line 126 was run
 
         if request.method == 'POST':
             question = json.loads(request.args['question'])
