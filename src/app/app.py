@@ -155,18 +155,14 @@ def play():
                 question = question,
                 name_pokemon_1 = p0["name"],
                 name_pokemon_2 = p1["name"],
-                img_pokemon_1 = "https://media.vozpopuli.com/2019/10/Pablo-Motos-suele-vacaciones-Javea_1295280471_13960572_660x785.png",
-                img_pokemon_2 = "https://media.vozpopuli.com/2019/10/Pablo-Motos-suele-vacaciones-Javea_1295280471_13960572_660x785.png",
-                # img_pokemon_1 = f"{BASE_URL}/pokemon_img/{d_score[user.id][1][1]['id']}",
-                # img_pokemon_2 = f"{BASE_URL}/pokemon_img/{d_score[user.id][1][2]['id']}",
+                img_pokemon_1 = f"{BASE_URL}/pokemon_img/{d_score[user.id][1][1]['id']}",
+                img_pokemon_2 = f"{BASE_URL}/pokemon_img/{d_score[user.id][1][2]['id']}",
                 score = score,
                 **GLOBAL_CONTEXT
             )
         
 
         if request.method == 'POST':
-            
-            request.
             return render_template('play/play.html', **GLOBAL_CONTEXT)
     
     else:
@@ -203,7 +199,9 @@ def ranking():
             user = None
 
     if user != None:
-        top_users = [
+        
+
+        '''top_users = [
         {'username': 'AshKetchum', 'high_score': 1500},
         {'username': 'Misty', 'high_score': 1400},
         {'username': 'Brock', 'high_score': 1350},
@@ -215,7 +213,9 @@ def ranking():
         {'username': 'GaryOak', 'high_score': 1300},
         {'username': 'PikachuFan', 'high_score': 1250},]
         user_ranking = 42 
-        user_high_score = 1000
+        user_high_score = 1000'''
+
+
         return render_template('ranking/ranking.html', top_users=top_users, user_ranking=user_ranking, user_high_score=user_high_score)
     else:
         return redirect(url_for('login'))

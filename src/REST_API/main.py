@@ -1,18 +1,24 @@
 
 from fastapi import FastAPI, HTTPException, Depends
+from fastapi.responses import FileResponse
 from httpx import HTTPTransport
 from sqlalchemy.orm import Session
-from ORMSchema import Base, Pokemon, Habitat, GrowthRate, Ability, Form, Move, Type, engine
+from ORMSchema import Base, Pokemon, Habitat, GrowthRate, Ability, Form, Move, Type, Score, User, engine
 from pokemon import PokemonResponse
-from sqlalchemy import select, func
+from sqlalchemy import select, func, desc
 from random import sample
+import requests
+import image_webscraping
+import os
 
 
 # CONSTANTS 
 
 MISSING_ITEMS_ERR = "Not enough items in pokemon database"
 TYPE_404_ERR = "Type given doesn't exist"
-
+POKEMON_404_ERR = "Pokemon not found"
+ABILITY_404_ERR = "ability not found"
+RANKING_404_ERR = "Error in ranking"
 
 # Inicializar la app
 app = FastAPI()
@@ -25,7 +31,7 @@ def get_pokemon_by_id(id: int):
         stmt = select(Pokemon).where(Pokemon.id == id)
         p = session.scalar(stmt)
         if p == None:
-            raise HTTPException(status_code=500, detail=MISSING_ITEMS_ERR)
+            raise HTTPException(status_code=404, detail=POKEMON_404_ERR)
         return PokemonResponse(p)
 
 # Get pokemon image by id
@@ -275,7 +281,7 @@ def get_random_type():
         stmt = select(Type.type).distinct().order_by(func.random()).limit(1)
         t = session.execute(stmt).first()
         if t == None:
-            raise HTTPException(status_code=500, detail=MISSING_ITEMS_ERR)
+            raise HTTPException(status_code=500, detail=TYPE_404_ERR)
         return t.tuple()[0]
 
 @app.get("/search_misc/random/abilities")
@@ -284,5 +290,55 @@ def get_random_ability():
         stmt = select(Ability.ability).distinct().order_by(func.random()).limit(1)
         a = session.execute(stmt).first()
         if a == None:
-            raise HTTPException(status_code=500, detail=MISSING_ITEMS_ERR)
+            raise HTTPException(status_code=500, detail=ABILITY_404_ERR)
         return a.tuple()[0]
+
+
+# get pokemon-image
+@app.get("/pokemon_img/{id}")
+def get_pokemon_img(id: int):
+    with Session(engine) as session:
+        stmt = select(Pokemon.name).where(Pokemon.id == id)
+        n = session.execute(stmt).first()           
+
+    url, filename = image_webscraping.get_pokemon_img(n)
+    
+    save_directory = "/img" 
+    file_path = os.path.join(save_directory, filename)
+
+    # Realiza la solicitud GET para descargar la imagen
+    response = requests.get(url)
+    
+    # Verifica que la solicitud fue exitosa
+    if response.status_code == 200:
+        # Guarda el contenido en un archivo de imagen
+        with open(file_path, 'wb') as file:
+            file.write(response.content)
+            return FileResponse(response)
+            #print(f"Imagen guardada como {filename}")
+    else:
+        return 0
+    
+
+# Endpoint para obtener el top 10 de usuarios con el ranking más alto
+@app.get("/users/top/{n}")
+def get_top_10_users(n : int):
+    with Session(engine) as session:
+        # Obtener los usuarios con los puntajes más altos, ordenados de mayor a menor
+        stmt = (
+            select(User.username, Score.score)
+            .join(Score, User.id == Score.user_id)
+            .order_by(desc(Score.score))
+            .limit(n)
+        )
+        top_users = session.execute(stmt).fetchall()
+
+        # Si no hay resultados, devolver error
+        if not top_users:
+            raise HTTPException(status_code=404, detail=RANKING_404_ERR)
+
+        # Formatear los resultados en un formato amigable
+        return [
+            {"username": user.username, "score": user.score}
+            for user in top_users
+        ]
