@@ -9,7 +9,6 @@ from sqlalchemy import select, func, desc
 from random import sample
 import requests
 import image_webscraping
-import REST_API.image_webscraping as image_webscraping
 import os
 
 
