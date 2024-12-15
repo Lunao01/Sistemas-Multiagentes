@@ -7,10 +7,12 @@ import hashlib
 import base64
 import os
 import question_generator 
+import requests
 
 app = Flask(__name__)
 SESSION = "session"
-POINTS = 0 # Guardar el puntaje del usuario en la partida
+BASE_URL = "http://rest_api/"
+d_score = dict() # Guardar el puntaje del usuario en la partida
 
 # Nada más cargar la ruta raíz te reenvia a /login
 @app.route('/')
@@ -106,8 +108,6 @@ def menu():
             user = None
 
     if user != None:
-        global POINTS 
-        POINTS = 0 # se actualiza los puntos del usuario a 0
         return render_template('menu/menu.html')
     else:
         return redirect(url_for('login'))
@@ -127,21 +127,37 @@ def play():
     # GET/POST
     if user != None:
         if request.method == 'GET':
-            # Se genera la pregunta
-            question = question_generator.generate_question()
-            question_text = question.question
-            question_key = question.key
-            question_type = question.type
+            
+            # Si para el usuario es su primera pregunta, se añade al diccionario 
+            if d_score.get(user.id) == None:
+                question = question_generator.generate_question()
+                question_type = question['type']
+
+                # Datos para hacer la pregunta
+                response = requests.post(BASE_URL+question['key'])
+                    
+                if question_type == "specific":
+                    question
+
+
+                d_score[user.id] = [0, (question,'p1', 'p2')]
+            
+
+            # Información de la pregunta 
+            score, question =  d_score.get(user.id)
+            question_text = question['question']
+            question_key = question['key']
+            question_type = question['type']
 
             if question_type == "compare":
                 pass
             elif question_type == "choice":
                 pass
-            elif question_type == "abilities":
+            elif question_type == "specific":
                 pass
             print(question_type)
             
-            return render_template('play/play.html', question_text = question_text, question_key = question_key, question_type = question_type, name_pokemon_1 = name_pokemon_1, name_pokemon_2 = name_pokemon_2, img_pokemon_1 = img_pokemon_1, img_pokemon_2 = img_pokemon_2, score = POINTS)
+            return render_template('play/play.html', question_text = question_text, question_key = question_key, question_type = question_type, name_pokemon_1 = name_pokemon_1, name_pokemon_2 = name_pokemon_2, img_pokemon_1 = img_pokemon_1, img_pokemon_2 = img_pokemon_2, score = score)
         
 
         if request.method == 'POST':

@@ -26,7 +26,7 @@ def get_random_two_pokemons():
     return pokemons
 
 # get two random pokemons but only get ids, names and heights
-@app.get("/search_pokemon/random_two_height")
+@app.get("/search_pokemon/height")
 def get_random_two_pokemons_height():
     with Session(engine) as session:
         # Select only id, name, and height of two random Pokémon
@@ -35,7 +35,7 @@ def get_random_two_pokemons_height():
         return pokemons
 
 # get two random pokemons but only get ids, names and weights
-@app.get("/search_pokemon/random_two_weight")
+@app.get("/search_pokemon/weight")
 def get_random_two_pokemons_weight():
     with Session(engine) as session:
         # Select only id, name, and weight of two random Pokémon
@@ -44,7 +44,7 @@ def get_random_two_pokemons_weight():
         return pokemons
 
 # get two random pokemons where one is legendary and the other is not
-@app.get("/search_pokemon/legendary_and_not")
+@app.get("/search_pokemon/legendary")
 def get_random_legendary_pokemon_and_not():
     with Session(engine) as session:
         # Select one legendary Pokémon and one non-legendary Pokémon
@@ -63,7 +63,7 @@ def get_random_legendary_pokemon_and_not():
         return pokemons
     
 # get two random pokemons where one is mythical and the other is not
-@app.get("/search_pokemon/mythical_and_not")
+@app.get("/search_pokemon/is_mythical")
 def get_random_mythical_pokemon_and_not():
     with Session(engine) as session:
         # Select one mythical Pokémon and one non-mythical Pokémon
@@ -82,7 +82,7 @@ def get_random_mythical_pokemon_and_not():
         return pokemons
 
 # get two random pokemons but only get ids, names and hp
-@app.get("/search_pokemon/random_two_hp")
+@app.get("/search_pokemon/hp")
 def get_random_two_pokemons_hp():
     with Session(engine) as session:
         # Select only id, name, and weight of two random Pokémon
@@ -91,7 +91,7 @@ def get_random_two_pokemons_hp():
         return pokemons
     
 # get two random pokemons but only get ids, names and attacks
-@app.get("/search_pokemon/random_two_attack")
+@app.get("/search_pokemon/attack")
 def get_random_two_pokemons_attack():
     with Session(engine) as session:
         # Select only id, name, and attack of two random Pokémon
@@ -100,7 +100,7 @@ def get_random_two_pokemons_attack():
         return pokemons
 
 # get two random pokemons but only get ids, names and defenses
-@app.get("/search_pokemon/random_two_defense")
+@app.get("/search_pokemon/defense")
 def get_random_two_pokemons_defense():
     with Session(engine) as session:
         # Select only id, name, and defense of two random Pokémon
@@ -109,7 +109,7 @@ def get_random_two_pokemons_defense():
         return pokemons
 
 # get two random pokemons but only get ids, names and special attacks
-@app.get("/search_pokemon/random_two_special_attack")
+@app.get("/search_pokemon/special-attack")
 def get_random_two_pokemons_special_attack():
     with Session(engine) as session:
         # Select only id, name, and special attack of two random Pokémon
@@ -118,7 +118,7 @@ def get_random_two_pokemons_special_attack():
         return pokemons
     
 # get two random pokemons but only get ids, names and special defenses
-@app.get("/search_pokemon/random_two_special_defense")
+@app.get("/search_pokemon/special-defense")
 def get_random_two_pokemons_special_defense():
     with Session(engine) as session:
         # Select only id, name, and special defense of two random Pokémon
@@ -127,7 +127,7 @@ def get_random_two_pokemons_special_defense():
         return pokemons
 
 # get two random pokemons but only get ids, names and speeds
-@app.get("/search_pokemon/random_two_speed")
+@app.get("/search_pokemon/speed")
 def get_random_two_pokemons_speed():
     with Session(engine) as session:
         # Select only id, name, and speed of two random Pokémon
@@ -136,7 +136,7 @@ def get_random_two_pokemons_speed():
         return pokemons
 
 # get two random pokemons but only get ids, names and caputre rates
-@app.get("/search_pokemon/random_two_capture_rate")
+@app.get("/search_pokemon/capture_rate")
 def get_random_two_pokemons_capture_rate():
     with Session(engine) as session:
         # Select only id, name, and capture rate of two random Pokémon
@@ -145,7 +145,7 @@ def get_random_two_pokemons_capture_rate():
         return pokemons
 
 # get two random pokemons but only get ids, names and type
-@app.get("/search_pokemon/random_two_type")
+@app.get("/search_pokemon/types")
 def get_random_two_pokemons_type():
     with Session(engine) as session:
         # Selecciona 2 Pokémon aleatorios y muestra todos sus tipos
@@ -161,7 +161,7 @@ def get_random_two_pokemons_type():
     
 
 # get two random pokemons but only get ids, names and abilities
-@app.get("/search_pokemon/random_two_ability")
+@app.get("/search_pokemon/abilities")
 def get_random_two_pokemons_ability():
     with Session(engine) as session:
         # Selecciona 2 Pokémon aleatorios y muestra todos sus abilidades
