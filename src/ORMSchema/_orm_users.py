@@ -15,10 +15,8 @@ pokemon_unlocked_by = Table(
 class Score(Base):
     __tablename__ = "scores"
     id: Mapped[int] = mapped_column(primary_key=True)
-    user: Mapped[int] = mapped_column(
-        Integer(), ForeignKey("users.id"), primary_key=True
-    )
     score: Mapped[int] = mapped_column(Integer())
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"))
 
 
 class User(Base):
@@ -29,6 +27,7 @@ class User(Base):
         String(128) 
     )  # for sha512, the hash algorithm used
     cookies: Mapped[List["Cookie"]] = relationship(cascade="all, delete-orphan")
+    scores: Mapped[List["Score"]] = relationship(cascade="all, delete-orphan")
 
 
 class Cookie(Base):

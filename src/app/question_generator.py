@@ -3,7 +3,7 @@ import json
 import random
 import os
 
-file_path = '.. static/json/questions.json'
+file_path = 'static/json/questions.json'
 
 # Método para cargar el archivo JSON y obtener una pregunta aleatoria
 def generate_question(): 

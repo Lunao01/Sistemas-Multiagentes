@@ -207,6 +207,7 @@ button:hover {
 /* Estilo para el popup */
 .popup {
     position: fixed;
+    display: flex;
     top: 0;
     left: 0;
     width: 100%;
@@ -218,14 +219,11 @@ button:hover {
 
 /* Estilos para el contenido del popup */
 .popup-content {
-    background-color: rgb(255, 0, 0);
+    position: absolute;
+    background-color: #F04242;
     padding: 20px;
     border-radius: 5px;
     text-align: center;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
     height: fit-content;
     width: 300px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -234,7 +232,7 @@ button:hover {
 /* Estilo para el botón de cerrar */
 .close {
     position: absolute;
-    top: 10px;
+    top: 0;
     right: 10px;
     font-size: 30px;
     cursor: pointer;
