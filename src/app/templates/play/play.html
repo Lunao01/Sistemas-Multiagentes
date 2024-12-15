@@ -11,18 +11,18 @@
   <div class="container">
     <!-- Pregunta en la parte superior -->
     <div class="question">
-        {{ question.question }}
+        {{ question['question'] }}
     </div>
 
     <!-- Contenedor de botones con imágenes de Pokémon -->
     <div class="buttons-container">
-      <button class="pokemon-1-btn">
+      <button id="pokemon-1-btn">
         <img src={{ img_pokemon_1 }} alt="{{name_pokemon_1}}">
         <br>
         {{pokemon_1.name}}
       </button>
 
-      <button class="pokemon-2-btn">
+      <button id="pokemon-2-btn">
         <img width="256" src={{ img_pokemon_2 }} alt="{{name_pokemon_2}}">
         <br>
         {{pokemon_2.name}}
@@ -42,30 +42,31 @@
   <script> 
     const questionKey = "{{ question_key }}"
 
-
     // Eventos para cada posible opción (pokémon 1 vs pokémon 2)
     document.getElementById("pokemon-1-btn").addEventListener("click", function() {
         url = "{{ url_for('play') }}" + 
-            "?question=" + "{{question}}" + 
+            "?{{'key='~question.key~('&'|safe)}}{{'type='~question.type~('&'|safe)}}{{'condition='~question.condition}}" +
             "&pokemon1={{pokemon_1.id}}" +
             "&pokemon2={{pokemon_2.id}}" +
             "&pokemon_guess={{pokemon_1.id}}";
-        $.post(url);
+        fetch(url, {method: "POST"});
         window.location.reload();
     });
 
     document.getElementById("pokemon-2-btn").addEventListener("click", function() {
         url = "{{ url_for('play') }}" + 
-            "?question=" + "{{question}}" + 
+            "?{{'key='~question.key~('&'|safe)}}{{'type='~question.type~('&'|safe)}}{{'condition='~question.condition}}" +
             "&pokemon1={{pokemon_1.id}}" +
             "&pokemon2={{pokemon_2.id}}" +
             "&pokemon_guess={{pokemon_2.id}}";
-        $.post(url);
+        fetch(url, {method: "POST"});
         window.location.reload();
     });
 
     // Salir del modo juego
     document.getElementById("exitBtn").addEventListener("click", function() {
+      url = "{{ url_for('play') }}?exit=1";
+      fetch(url, {method: "POST"});
       window.location.href = "{{ url_for('menu') }}";
     });
 </script>

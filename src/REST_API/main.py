@@ -85,8 +85,8 @@ def get_random_legendary_pokemon_and_not():
         
         # Return the results as a list of dictionaries
         pokemons = [
-            {"id": legendary_pokemon[0], "name": legendary_pokemon[1], "is_legendary": legendary_pokemon[2]},
-            {"id": non_legendary_pokemon[0], "name": non_legendary_pokemon[1], "is_legendary": non_legendary_pokemon[2]}
+            {"id": legendary_pokemon[0], "name": legendary_pokemon[1], "legendary": legendary_pokemon[2]},
+            {"id": non_legendary_pokemon[0], "name": non_legendary_pokemon[1], "legendary": non_legendary_pokemon[2]}
         ]
         pokemons = sample(pokemons,2)
         return pokemons
@@ -147,7 +147,7 @@ def get_random_two_pokemons_defense():
         return pokemons
 
 # get two random pokemons but only get ids, names and special attacks
-@app.get("/search_pokemon/special-attack")
+@app.get("/search_pokemon/special_attack")
 def get_random_two_pokemons_special_attack():
     with Session(engine) as session:
         # Select only id, name, and special attack of two random Pokémon
@@ -158,7 +158,7 @@ def get_random_two_pokemons_special_attack():
         return pokemons
     
 # get two random pokemons but only get ids, names and special defenses
-@app.get("/search_pokemon/special-defense")
+@app.get("/search_pokemon/special_defense")
 def get_random_two_pokemons_special_defense():
     with Session(engine) as session:
         # Select only id, name, and special defense of two random Pokémon
@@ -294,7 +294,7 @@ def get_random_ability():
         return a.tuple()[0]
 
 
-# get pokemon-image
+# get pokemon_image
 @app.get("/pokemon_img/{id}")
 def get_pokemon_img(id: int):
     with Session(engine) as session:

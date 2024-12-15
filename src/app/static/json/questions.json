@@ -72,25 +72,25 @@
       },
       {
         "question": "Which Pokémon has the highest Special Attack?",
-        "key": "special-attack",
+        "key": "special_attack",
         "type": "compare",
         "condition": "more"
       },
       {
         "question": "Which Pokémon has the lowest Special Attack?",
-        "key": "special-attack",
+        "key": "special_attack",
         "type": "compare",
         "condition": "less"
       },
       {
         "question": "Which Pokémon has the highest Special Defense?",
-        "key": "special-defense",
+        "key": "special_defense",
         "type": "compare",
         "condition": "more"
       },
       {
         "question": "Which Pokémon has the lowest Special Defense?",
-        "key": "special-defense",
+        "key": "special_defense",
         "type": "compare",
         "condition": "less"
       },

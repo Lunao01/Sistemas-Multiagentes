@@ -1,8 +1,9 @@
 import json
 from typing import Any, List, Tuple
+from urllib.parse import unquote
 from flask import Flask, render_template, request, redirect, url_for
 from config import config # archivo config.py
-from ORMSchema import engine, User, Cookie, GrowthRate
+from ORMSchema import engine, User, Cookie, GrowthRate, Score
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 import hashlib 
@@ -16,8 +17,9 @@ SESSION = "session"
 BASE_URL = "http://rest_api:8000"
 d_score:dict[int,Any] = dict() # Guardar el puntaje del usuario en la partida
 GLOBAL_CONTEXT = {
-    "base_url": BASE_URL,
+    "base_url": "http://localhost:5000",
 }
+FAIL_REDIR = -1
 
 # Nada más cargar la ruta raíz te reenvia a /login
 @app.route('/')
@@ -136,21 +138,29 @@ def play():
             return play_get(user_id) # cant be unbound, since if user != none implies that conditional in line 126 was run
 
         if request.method == 'POST':
-            question = json.loads(request.args['question'])
+            if 'exit' in request.args.keys():
+                del d_score[user_id]
+                return ''
+            
+            question = request.args.to_dict()
+            del question['pokemon1']
+            del question['pokemon2']
+            del question['pokemon_guess']
 
             _poke1:requests.Response = requests.get(f"{BASE_URL}/pokemon/{request.args['pokemon1']}")
             if _poke1.status_code == 404:
                 ERRMSG = "404 pokemon not found. This is an internal server error, please report this issue to the devs"
                 return render_template('play/play.html', message = ERRMSG,**GLOBAL_CONTEXT)
-            assert _poke1 == 200
+            assert _poke1.status_code == 200
             poke1:dict[str,str|int|bool|List[str]|GrowthRate]=_poke1.json()
             del _poke1
                 
+            
             _poke2:requests.Response = requests.get(f"{BASE_URL}/pokemon/{request.args['pokemon2']}")
             if _poke2.status_code == 404:
                 ERRMSG = "404 pokemon not found. This is an internal server error, please report this issue to the devs"
                 return render_template('play/play.html', message = ERRMSG,**GLOBAL_CONTEXT)
-            assert _poke2 == 200
+            assert _poke2.status_code == 200
             poke2:dict = _poke2.json()
             del _poke2
 
@@ -158,7 +168,7 @@ def play():
             if _poke_guess.status_code == 404:
                 ERRMSG = "404 pokemon not found. This is an internal server error, please report this issue to the devs"
                 return render_template('play/play.html', message = ERRMSG,**GLOBAL_CONTEXT)
-            assert _poke_guess == 200
+            assert _poke_guess.status_code == 200
             poke_guess:dict = _poke_guess.json()
             del _poke_guess
 
@@ -201,11 +211,17 @@ def play():
             if correct:
                 gen_question(user_id)
                 d_score[user_id][0] += 1
-                return render_template('play/play.html', **GLOBAL_CONTEXT)
+                return play_get(user_id)
             else:
                 p = d_score[user_id][0]
-                del d_score[user_id]
-                return render_template('play/play.html', message=f"End of game. score: {p}", **GLOBAL_CONTEXT)
+                d_score[user_id] = FAIL_REDIR
+                with Session(engine) as session:
+                    stmt = select(User).where(User.id == user_id)
+                    u = session.execute(stmt).first()
+                    assert u is not None
+                    u = u.tuple()[0]
+                    u.scores.append(Score(score=p))
+                return ""
                 
     
     else:
@@ -215,7 +231,11 @@ def play():
 def play_get(user_id):
     # Si para el usuario es su primera pregunta, se añade al diccionario 
     if d_score.get(user_id) == None:
+        d_score[user_id] = [0, None]
         gen_question(user_id)
+    if d_score.get(user_id) == FAIL_REDIR:
+        del d_score[user_id]
+        return redirect(url_for('menu/end_screen'))
     
     # Información de la pregunta 
     score, (question,p0,p1) =  d_score[user_id]
@@ -244,7 +264,7 @@ def gen_question(user_id):
         question["property"] = chosen_property
         question["question"].format(X=chosen_property)
     response:Tuple[dict[str,Any],dict[str,Any]] = requests.get(url).json()
-    d_score[user_id] = [0, (question,*response)]
+    d_score[user_id][1] = (question,*response)
 
 # Pokedex
 @app.route('/menu/pokedex')
