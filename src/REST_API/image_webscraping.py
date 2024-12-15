@@ -5,7 +5,6 @@ from io import BytesIO
 
 def get_pokemon_img(pk):
     url = f"https://www.wikidex.net/wiki/{pk}"
-    print(url)
     request = requests.get(url)
     soup = BeautifulSoup(request.content, 'html.parser')
     img = soup.find("div", class_ = "imagen imageswitch_section imageswitch_image imageswitch_scale")
