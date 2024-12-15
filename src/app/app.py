@@ -126,13 +126,14 @@ def play():
         if request.cookies.get(SESSION) != None:
             stmt = select(User).join(Cookie).where(Cookie.id == request.cookies.get(SESSION))
             user = session.scalar(stmt)
+            user_id = user.id
         else:
             user = None
 
     # GET/POST
     if user != None:
         if request.method == 'GET':
-            play_get(user)
+            play_get(user_id) # cant be unbound, since if user != none implies that conditional in line 126 was run
 
         if request.method == 'POST':
             question = json.loads(request.args['question'])
@@ -161,6 +162,7 @@ def play():
             poke_guess:dict = _poke_guess.json()
             del _poke_guess
 
+            correct = False
             if question['type'] == 'compare':
                 if poke1[question['key']] < poke2[question['key']]:
                     if poke_guess['id']==poke1['id']:
@@ -184,33 +186,39 @@ def play():
                 if poke_guess['id'] in r:
                     correct = True
             elif question['type'] == 'choice':
-                pass
+                if poke1[question['key']]:
+                    r = poke1
+                elif poke2[question['key']]:
+                    r = poke2
+                else:
+                    raise Exception("Unreachable code")
+                
+                if r['id'] == poke_guess['id']:
+                    correct = True
             else:
                 raise Exception("Guessed invalid question (Nonexistant type).")
-                       
-            return render_template('play/play.html', **GLOBAL_CONTEXT)
+            
+            if correct:
+                gen_question(user_id)
+                d_score[user_id][0] += 1
+                return render_template('play/play.html', **GLOBAL_CONTEXT)
+            else:
+                p = d_score[user_id][0]
+                del d_score[user_id]
+                return render_template('play/play.html', message=f"End of game. score: {p}", **GLOBAL_CONTEXT)
+                
     
     else:
         return redirect(url_for('login'))
 
 
-def play_get(user:User):
+def play_get(user_id):
     # Si para el usuario es su primera pregunta, se añade al diccionario 
-    if d_score.get(user.id) == None:
-        question = question_generator.generate_question()
-        question_type = question['type']
-        # Datos para hacer la pregunta
-        url = f"{BASE_URL}/search_pokemon/{question['key']}"
-        if question_type == "specific":
-            chosen_property:str = requests.get(f"{BASE_URL}/search_misc/random/{question['key']}").json()
-            url = f"{url}/{chosen_property}"
-            question["property"] = chosen_property
-            question["question"].format(X=chosen_property)
-        response:Tuple[dict[str,Any],dict[str,Any]] = requests.get(url).json()
-        d_score[user.id] = [0, (question,*response)]
+    if d_score.get(user_id) == None:
+        gen_question(user_id)
     
     # Información de la pregunta 
-    score, (question,p0,p1) =  d_score[user.id]
+    score, (question,p0,p1) =  d_score[user_id]
     
     return render_template(
         'play/play.html',
@@ -224,6 +232,19 @@ def play_get(user:User):
         score = score,
         **GLOBAL_CONTEXT
     )
+
+def gen_question(user_id):
+    question = question_generator.generate_question()
+    question_type = question['type']
+        # Datos para hacer la pregunta
+    url = f"{BASE_URL}/search_pokemon/{question['key']}"
+    if question_type == "specific":
+        chosen_property:str = requests.get(f"{BASE_URL}/search_misc/random/{question['key']}").json()
+        url = f"{url}/{chosen_property}"
+        question["property"] = chosen_property
+        question["question"].format(X=chosen_property)
+    response:Tuple[dict[str,Any],dict[str,Any]] = requests.get(url).json()
+    d_score[user_id] = [0, (question,*response)]
 
 # Pokedex
 @app.route('/menu/pokedex')
