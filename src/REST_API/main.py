@@ -1,5 +1,6 @@
 
 from fastapi import FastAPI, HTTPException, Depends
+from httpx import HTTPTransport
 from sqlalchemy.orm import Session
 from ORMSchema import Base, Pokemon, Habitat, GrowthRate, Ability, Form, Move, Type, engine
 from pokemon import PokemonResponse
@@ -10,6 +11,7 @@ from random import sample
 # CONSTANTS 
 
 MISSING_ITEMS_ERR = "Not enough items in pokemon database"
+TYPE_404_ERR = "Type given doesn't exist"
 
 
 # Inicializar la app
@@ -25,6 +27,9 @@ def get_pokemon_by_id(id: int):
         if p == None:
             raise HTTPException(status_code=500, detail=MISSING_ITEMS_ERR)
         return PokemonResponse(p)
+
+# Get pokemon image by id
+# @app.get("/pokemon_img/{id}")
   
 @app.get("/search_pokemon/random_two")
 def get_random_two_pokemons():
@@ -77,6 +82,7 @@ def get_random_legendary_pokemon_and_not():
             {"id": legendary_pokemon[0], "name": legendary_pokemon[1], "is_legendary": legendary_pokemon[2]},
             {"id": non_legendary_pokemon[0], "name": non_legendary_pokemon[1], "is_legendary": non_legendary_pokemon[2]}
         ]
+        pokemons = sample(pokemons,2)
         return pokemons
     
 # get two random pokemons where one is mythical and the other is not
@@ -98,7 +104,7 @@ def get_random_mythical_pokemon_and_not():
             {"id": mythical_pokemon[0], "name": mythical_pokemon[1], "is_mythical": mythical_pokemon[2]},
             {"id": non_mythical_pokemon[0], "name": non_mythical_pokemon[1], "is_mythical": non_mythical_pokemon[2]}
         ]
-        
+        pokemons = sample(pokemons, 2)
         return pokemons
 
 # get two random pokemons but only get ids, names and hp
@@ -179,37 +185,45 @@ def get_random_two_pokemons_capture_rate():
         return pokemons
 
 # get two random pokemons but only get ids, names and type. At least 1 pokemon will have the type {type}
-@app.get("/search_pokemon/types")
-def get_random_two_pokemons_type():
-    type = 'water'
-    try:
-        with Session(engine) as session:
-            # Selecciona 2 Pokémon aleatorios y muestra todos sus tipos
-            stmt_t = (
-                select(Pokemon.id, Pokemon.name, func.array_agg(Type.type))
-                .join(Type, Pokemon.id == Type.pokemon)
-                .where( Type.type == type)
-                .group_by(Pokemon.id, Pokemon.name)  # Agrupar por id y nombre del Pokémon
-                .order_by(func.random())
-                .limit(1)
-            )
-            stmt_nt = (
-                select(Pokemon.id, Pokemon.name, func.array_agg(Type.type))
-                .join(Type, Pokemon.id == Type.pokemon)
-                .where( Type.type != type)
-                .group_by(Pokemon.id, Pokemon.name)
-                .order_by(func.random())
-                .limit(1)
-            )
-            p0 = session.execute(stmt_t).first()
-            p1 = session.execute(stmt_nt).first()
-            if p0 == None or p1 == None:
-                raise HTTPException(status_code=500, detail=MISSING_ITEMS_ERR)
-            pokemons = [p0.tuple(), p1.tuple()]
-            pokemons = sample(pokemons,2)
-            return pokemons
-    except Exception as e:
-        print(e)
+@app.get("/search_pokemon/types/{type}")
+def get_random_two_pokemons_type(type:str):
+    with Session(engine) as session:
+        # Selecciona 2 Pokémon aleatorios y muestra todos sus tipos
+        all_pokemon_with_type = (
+            select(Pokemon.id)
+            .join(Type, Type.pokemon == Pokemon.id)
+            .where(Type.type == type)
+        )
+        stmt_t = (
+            select(Pokemon.id, Pokemon.name, func.array_agg(Type.type))
+            .join(Type, Pokemon.id == Type.pokemon)
+            .where( Pokemon.id.in_(all_pokemon_with_type))
+            .group_by(Pokemon.id, Pokemon.name)  # Agrupar por id y nombre del Pokémon
+            .order_by(func.random())
+            .limit(1)
+        )
+        stmt_nt = (
+            select(Pokemon.id, Pokemon.name, func.array_agg(Type.type))
+            .join(Type, Pokemon.id == Type.pokemon)
+            .where( Pokemon.id.not_in(all_pokemon_with_type))
+            .group_by(Pokemon.id, Pokemon.name)
+            .order_by(func.random())
+            .limit(1)
+        )
+        
+        p0 = session.execute(stmt_t).first()
+        p1 = session.execute(stmt_nt).first()
+
+        types = [i.tuple()[0] for i in session.execute(select(Type.type).distinct()).all()]
+        if (p0 == None or p1 == None) and len(types)==0:
+            raise HTTPException(status_code=500, detail=MISSING_ITEMS_ERR)
+        elif (p0 == None or p1 == None) and len(types) > 0:
+            raise  HTTPException(status_code=404, detail=TYPE_404_ERR)
+        
+        pokemons = [p0.tuple(), p1.tuple()]
+        pokemons = sample(pokemons,2)
+        pokemons = [{'id':i[0],'name':i[1],'types':i[2]} for i in pokemons]
+        return pokemons
     
 
 # get two random pokemons but only get ids, names and abilities
@@ -217,11 +231,16 @@ def get_random_two_pokemons_type():
 def get_random_two_pokemons_ability(ability:str):
     with Session(engine) as session:
         # Selecciona 2 Pokémon aleatorios y muestra todos sus abilidades
+        all_pokemon_with_ability = (
+            select(Pokemon.id)
+            .join(Ability, Ability.pokemon == Pokemon.id)
+            .where(Ability.ability == ability)
+        )
         stmt_a = (
             select(Pokemon.id, Pokemon.name, func.array_agg(Ability.ability))
             .select_from(Pokemon)  # Explicitly state that Pokemon is the base table
             .join(Ability, Ability.pokemon == Pokemon.id)  # Join Pokemon with Ability
-            .where( Type.type == type)
+            .where(Pokemon.id.in_(all_pokemon_with_ability)) # Only select pokemon rows with the ability
             .group_by(Pokemon.id, Pokemon.name)  # Group by id and name to allow aggregation
             .order_by(func.random())  # Order randomly
             .limit(2)  # Limit to 2 pokemons
@@ -230,18 +249,40 @@ def get_random_two_pokemons_ability(ability:str):
             select(Pokemon.id, Pokemon.name, func.array_agg(Ability.ability))
             .select_from(Pokemon)  # Explicitly state that Pokemon is the base table
             .join(Ability, Ability.pokemon == Pokemon.id)  # Join Pokemon with Ability
-            .where( Type.type != type)
+            .where( Pokemon.id.not_in(all_pokemon_with_ability)) # Only select pokemon rows with the ability
             .group_by(Pokemon.id, Pokemon.name)  # Group by id and name to allow aggregation
             .order_by(func.random())  # Order randomly
             .limit(2)  # Limit to 2 pokemons
         )
 
-        pokemons = [session.execute(stmt_a).first(), session.execute(stmt_na).first()]
-        if None in pokemons:
+        p0 = session.execute(stmt_a).first()
+        p1 = session.execute(stmt_na).first()
+
+        abilities = [i.tuple()[0] for i in session.execute(select(Ability.ability).distinct()).all()]
+        if (p0 == None or p1 == None) and len(abilities)==0:
             raise HTTPException(status_code=500, detail=MISSING_ITEMS_ERR)
+        elif (p0 == None or p1 == None) and len(abilities) > 0:
+            raise  HTTPException(status_code=404, detail=TYPE_404_ERR)
+        
+        pokemons = [p0.tuple(), p1.tuple()]
+        pokemons = sample(pokemons,2)
+        pokemons = [{'id':i[0],'name':i[1],'abilities':i[2]} for i in pokemons]
         return pokemons
 
-@app.get("/search_misc/types")
+@app.get("/search_misc/random/types")
 def get_random_type():
     with Session(engine) as session:
-        select(Type.type).distinct()
+        stmt = select(Type.type).distinct().order_by(func.random()).limit(1)
+        t = session.execute(stmt).first()
+        if t == None:
+            raise HTTPException(status_code=500, detail=MISSING_ITEMS_ERR)
+        return t.tuple()[0]
+
+@app.get("/search_misc/random/abilities")
+def get_random_ability():
+    with Session(engine) as session:
+        stmt = select(Ability.ability).distinct().order_by(func.random()).limit(1)
+        a = session.execute(stmt).first()
+        if a == None:
+            raise HTTPException(status_code=500, detail=MISSING_ITEMS_ERR)
+        return a.tuple()[0]

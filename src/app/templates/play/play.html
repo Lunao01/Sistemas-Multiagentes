@@ -11,17 +11,21 @@
   <div class="container">
     <!-- Pregunta en la parte superior -->
     <div class="question">
-        {{ question_text }}
+        {{ question.question }}
     </div>
 
     <!-- Contenedor de botones con imágenes de Pokémon -->
     <div class="buttons-container">
       <button class="pokemon-1-btn">
-        <img src={{ pokemon_1 }} alt= "Pokemon_1">
+        <img src={{ img_pokemon_1 }} alt="{{name_pokemon_1}}">
+        <br>
+        {{name_pokemon_1}}
       </button>
 
       <button class="pokemon-2-btn">
-        <img src={{ pokemon_2 }} alt="Pokemon_2">
+        <img width="256" src={{ img_pokemon_2 }} alt="{{name_pokemon_2}}">
+        <br>
+        {{name_pokemon_2}}
       </button>
     </div>
 
@@ -49,6 +53,7 @@
 
     document.getElementById("pokemon-2-btn").addEventListener("click", function() {
       window.location.href = "{{ url_for('play') }}";
+      $.post("")
     });
 
     // Salir del modo juego

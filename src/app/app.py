@@ -1,3 +1,4 @@
+from typing import Any, Tuple
 from flask import Flask, render_template, request, redirect, url_for
 from config import config # archivo config.py
 from ORMSchema import engine, User, Cookie
@@ -11,8 +12,11 @@ import requests
 
 app = Flask(__name__)
 SESSION = "session"
-BASE_URL = "http://rest_api/"
-d_score = dict() # Guardar el puntaje del usuario en la partida
+BASE_URL = "http://rest_api:8000/"
+d_score:dict[int,Any] = dict() # Guardar el puntaje del usuario en la partida
+GLOBAL_CONTEXT = {
+    "base_url": BASE_URL,
+}
 
 # Nada más cargar la ruta raíz te reenvia a /login
 @app.route('/')
@@ -36,7 +40,7 @@ def login():
         if db_user is None:
             # Si el usuario no existe en la base de datos
             # print("Usuario no encontrado.")
-            return render_template('auth/login.html', message="User not found.")
+            return render_template('auth/login.html', message="User not found.",**GLOBAL_CONTEXT)
         
         else:
             # Verificar la contraseña usando el hash almacenado
@@ -57,10 +61,10 @@ def login():
                 return response
             
             else:
-                return render_template('auth/login.html', message="Incorrect password.")
+                return render_template('auth/login.html', message="Incorrect password.",**GLOBAL_CONTEXT)
 
     else: # Si es GET se renderiza la página login.html
-        return render_template('auth/login.html') # ruta de la plantilla html index
+        return render_template('auth/login.html',**GLOBAL_CONTEXT) # ruta de la plantilla html index
 
 
 # Register
@@ -86,14 +90,14 @@ def register():
                     # print("Cuenta creada.")
                 
                 else:
-                    return render_template('auth/register.html', message="The user already exists.")
+                    return render_template('auth/register.html', message="The user already exists.", **GLOBAL_CONTEXT)
         else:
-            return render_template('auth/register.html', message="The passwords do not match.")
+            return render_template('auth/register.html', message="The passwords do not match.", **GLOBAL_CONTEXT)
 
         return redirect(url_for('login'))
 
     else: # Si es GET se renderiza la página register.html
-        return render_template('auth/register.html') # ruta de la plantilla html index
+        return render_template('auth/register.html', **GLOBAL_CONTEXT) # ruta de la plantilla html index
 
 
 # Menú principal
@@ -108,7 +112,7 @@ def menu():
             user = None
 
     if user != None:
-        return render_template('menu/menu.html')
+        return render_template('menu/menu.html',**GLOBAL_CONTEXT)
     else:
         return redirect(url_for('login'))
 
@@ -134,36 +138,36 @@ def play():
                 question_type = question['type']
 
                 # Datos para hacer la pregunta
-                response = requests.post(BASE_URL+question['key'])
-                    
+                url = f"{BASE_URL}/search_pokemon/{question['key']}"
                 if question_type == "specific":
-                    question
-
-
-                d_score[user.id] = [0, (question,'p1', 'p2')]
+                    chosen_property:str = requests.get(f"{BASE_URL}/search_misc/random/{question['key']}").json()
+                    url = f"{url}/{chosen_property}"
+                    question["property"] = chosen_property
+                    question["question"].format(X=chosen_property)
+                response:Tuple[dict[str,Any],dict[str,Any]] = requests.get(url).json()
+                d_score[user.id] = [0, (question,*response)]
             
-
             # Información de la pregunta 
-            score, question =  d_score.get(user.id)
-            question_text = question['question']
-            question_key = question['key']
-            question_type = question['type']
-
-            if question_type == "compare":
-                pass
-            elif question_type == "choice":
-                pass
-            elif question_type == "specific":
-                pass
-            print(question_type)
+            score, (question,p0,p1) =  d_score[user.id]
             
-            return render_template('play/play.html', question_text = question_text, question_key = question_key, question_type = question_type, name_pokemon_1 = name_pokemon_1, name_pokemon_2 = name_pokemon_2, img_pokemon_1 = img_pokemon_1, img_pokemon_2 = img_pokemon_2, score = score)
+            return render_template(
+                'play/play.html',
+                question = question,
+                name_pokemon_1 = p0["name"],
+                name_pokemon_2 = p1["name"],
+                img_pokemon_1 = "https://media.vozpopuli.com/2019/10/Pablo-Motos-suele-vacaciones-Javea_1295280471_13960572_660x785.png",
+                img_pokemon_2 = "https://media.vozpopuli.com/2019/10/Pablo-Motos-suele-vacaciones-Javea_1295280471_13960572_660x785.png",
+                # img_pokemon_1 = f"{BASE_URL}/pokemon_img/{d_score[user.id][1][1]['id']}",
+                # img_pokemon_2 = f"{BASE_URL}/pokemon_img/{d_score[user.id][1][2]['id']}",
+                score = score,
+                **GLOBAL_CONTEXT
+            )
         
 
         if request.method == 'POST':
             
-            
-            return render_template('play/play.html')
+            request.
+            return render_template('play/play.html', **GLOBAL_CONTEXT)
     
     else:
         return redirect(url_for('login'))
@@ -181,7 +185,7 @@ def pokedex():
             user = None
 
     if user != None:
-        return render_template('pokedex/pokedex.html')
+        return render_template('pokedex/pokedex.html', **GLOBAL_CONTEXT)
     else:
         return redirect(url_for('login'))
     
