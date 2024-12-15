@@ -1,7 +1,8 @@
-from typing import Any, Tuple
+import json
+from typing import Any, List, Tuple
 from flask import Flask, render_template, request, redirect, url_for
 from config import config # archivo config.py
-from ORMSchema import engine, User, Cookie
+from ORMSchema import engine, User, Cookie, GrowthRate
 from sqlalchemy.orm import Session
 from sqlalchemy import select
 import hashlib 
@@ -12,7 +13,7 @@ import requests
 
 app = Flask(__name__)
 SESSION = "session"
-BASE_URL = "http://rest_api:8000/"
+BASE_URL = "http://rest_api:8000"
 d_score:dict[int,Any] = dict() # Guardar el puntaje del usuario en la partida
 GLOBAL_CONTEXT = {
     "base_url": BASE_URL,
@@ -131,43 +132,98 @@ def play():
     # GET/POST
     if user != None:
         if request.method == 'GET':
-            
-            # Si para el usuario es su primera pregunta, se añade al diccionario 
-            if d_score.get(user.id) == None:
-                question = question_generator.generate_question()
-                question_type = question['type']
-
-                # Datos para hacer la pregunta
-                url = f"{BASE_URL}/search_pokemon/{question['key']}"
-                if question_type == "specific":
-                    chosen_property:str = requests.get(f"{BASE_URL}/search_misc/random/{question['key']}").json()
-                    url = f"{url}/{chosen_property}"
-                    question["property"] = chosen_property
-                    question["question"].format(X=chosen_property)
-                response:Tuple[dict[str,Any],dict[str,Any]] = requests.get(url).json()
-                d_score[user.id] = [0, (question,*response)]
-            
-            # Información de la pregunta 
-            score, (question,p0,p1) =  d_score[user.id]
-            
-            return render_template(
-                'play/play.html',
-                question = question,
-                name_pokemon_1 = p0["name"],
-                name_pokemon_2 = p1["name"],
-                img_pokemon_1 = f"{BASE_URL}/pokemon_img/{d_score[user.id][1][1]['id']}",
-                img_pokemon_2 = f"{BASE_URL}/pokemon_img/{d_score[user.id][1][2]['id']}",
-                score = score,
-                **GLOBAL_CONTEXT
-            )
-        
+            play_get(user)
 
         if request.method == 'POST':
+            question = json.loads(request.args['question'])
+
+            _poke1:requests.Response = requests.get(f"{BASE_URL}/pokemon/{request.args['pokemon1']}")
+            if _poke1.status_code == 404:
+                ERRMSG = "404 pokemon not found. This is an internal server error, please report this issue to the devs"
+                return render_template('play/play.html', message = ERRMSG,**GLOBAL_CONTEXT)
+            assert _poke1 == 200
+            poke1:dict[str,str|int|bool|List[str]|GrowthRate]=_poke1.json()
+            del _poke1
+                
+            _poke2:requests.Response = requests.get(f"{BASE_URL}/pokemon/{request.args['pokemon2']}")
+            if _poke2.status_code == 404:
+                ERRMSG = "404 pokemon not found. This is an internal server error, please report this issue to the devs"
+                return render_template('play/play.html', message = ERRMSG,**GLOBAL_CONTEXT)
+            assert _poke2 == 200
+            poke2:dict = _poke2.json()
+            del _poke2
+
+            _poke_guess:requests.Response = requests.get(f"{BASE_URL}/pokemon/{request.args['pokemon_guess']}")
+            if _poke_guess.status_code == 404:
+                ERRMSG = "404 pokemon not found. This is an internal server error, please report this issue to the devs"
+                return render_template('play/play.html', message = ERRMSG,**GLOBAL_CONTEXT)
+            assert _poke_guess == 200
+            poke_guess:dict = _poke_guess.json()
+            del _poke_guess
+
+            if question['type'] == 'compare':
+                if poke1[question['key']] < poke2[question['key']]:
+                    if poke_guess['id']==poke1['id']:
+                        correct = question['condition']=='less'
+                    if poke_guess['id']==poke2['id']:
+                        correct = question['condition']=='more'
+                elif poke1[question['key']] > poke2[question['key']]:                        
+                    if poke_guess['id']==poke1['id']:
+                        correct = question['condition']=='more'
+                    if poke_guess['id']==poke2['id']:
+                        correct = question['condition']=='less'
+                elif poke1[question['key']] == poke2[question['key']]:
+                    if poke_guess['id']==poke1['id'] or poke_guess['id'] == poke2['id']:
+                        correct = True
+            elif question['type'] == 'specific':
+                r = []
+                if question['property'] in poke1[question['key']]:
+                    r.append(poke1['id'])
+                if question['property'] in poke2[question['key']]:
+                    r.append(poke2['id'])
+                if poke_guess['id'] in r:
+                    correct = True
+            elif question['type'] == 'choice':
+                pass
+            else:
+                raise Exception("Guessed invalid question (Nonexistant type).")
+                       
             return render_template('play/play.html', **GLOBAL_CONTEXT)
     
     else:
         return redirect(url_for('login'))
 
+
+def play_get(user:User):
+    # Si para el usuario es su primera pregunta, se añade al diccionario 
+    if d_score.get(user.id) == None:
+        question = question_generator.generate_question()
+        question_type = question['type']
+        # Datos para hacer la pregunta
+        url = f"{BASE_URL}/search_pokemon/{question['key']}"
+        if question_type == "specific":
+            chosen_property:str = requests.get(f"{BASE_URL}/search_misc/random/{question['key']}").json()
+            url = f"{url}/{chosen_property}"
+            question["property"] = chosen_property
+            question["question"].format(X=chosen_property)
+        response:Tuple[dict[str,Any],dict[str,Any]] = requests.get(url).json()
+        d_score[user.id] = [0, (question,*response)]
+    
+    # Información de la pregunta 
+    score, (question,p0,p1) =  d_score[user.id]
+    
+    return render_template(
+        'play/play.html',
+        question = question,
+        pokemon_1 = p0,
+        pokemon_2 = p1,
+        img_pokemon_1 = "https://media.vozpopuli.com/2019/10/Pablo-Motos-suele-vacaciones-Javea_1295280471_13960572_660x785.png",
+        img_pokemon_2 = "https://media.vozpopuli.com/2019/10/Pablo-Motos-suele-vacaciones-Javea_1295280471_13960572_660x785.png",
+        # img_pokemon_1 = f"{BASE_URL}/pokemon_img/{d_score[user.id][1][1]['id']}",
+        # img_pokemon_2 = f"{BASE_URL}/pokemon_img/{d_score[user.id][1][2]['id']}",
+        score = score,
+        **GLOBAL_CONTEXT
+    )
 
 # Pokedex
 @app.route('/menu/pokedex')

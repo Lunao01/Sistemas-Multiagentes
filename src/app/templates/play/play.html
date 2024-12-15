@@ -19,13 +19,13 @@
       <button class="pokemon-1-btn">
         <img src={{ img_pokemon_1 }} alt="{{name_pokemon_1}}">
         <br>
-        {{name_pokemon_1}}
+        {{pokemon_1.name}}
       </button>
 
       <button class="pokemon-2-btn">
         <img width="256" src={{ img_pokemon_2 }} alt="{{name_pokemon_2}}">
         <br>
-        {{name_pokemon_2}}
+        {{pokemon_2.name}}
       </button>
     </div>
 
@@ -45,15 +45,23 @@
 
     // Eventos para cada posible opción (pokémon 1 vs pokémon 2)
     document.getElementById("pokemon-1-btn").addEventListener("click", function() {
-        window.location.href = "{{ url_for('play') }}" + 
-            "?question_key=" + question_key  + 
-            "&pokemon1=" + encodeURIComponent(pokemon1) + 
-            "&pokemon2=" + encodeURIComponent(pokemon2);
+        url = "{{ url_for('play') }}" + 
+            "?question=" + "{{question}}" + 
+            "&pokemon1={{pokemon_1.id}}" +
+            "&pokemon2={{pokemon_2.id}}" +
+            "&pokemon_guess={{pokemon_1.id}}";
+        $.post(url);
+        window.location.reload();
     });
 
     document.getElementById("pokemon-2-btn").addEventListener("click", function() {
-      window.location.href = "{{ url_for('play') }}";
-      $.post("")
+        url = "{{ url_for('play') }}" + 
+            "?question=" + "{{question}}" + 
+            "&pokemon1={{pokemon_1.id}}" +
+            "&pokemon2={{pokemon_2.id}}" +
+            "&pokemon_guess={{pokemon_2.id}}";
+        $.post(url);
+        window.location.reload();
     });
 
     // Salir del modo juego
