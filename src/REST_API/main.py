@@ -278,8 +278,8 @@ def get_random_two_pokemons_ability(ability:str):
 @app.get("/search_misc/random/types")
 def get_random_type():
     with Session(engine) as session:
-        stmt = select(Type.type).distinct().order_by(func.random()).limit(1)
-        t = session.execute(stmt).first()
+        stmt = select(Type.type).distinct()
+        t = sample(session.execute(stmt).all(),1)
         if t == None:
             raise HTTPException(status_code=500, detail=TYPE_404_ERR)
         return t.tuple()[0]
@@ -287,8 +287,8 @@ def get_random_type():
 @app.get("/search_misc/random/abilities")
 def get_random_ability():
     with Session(engine) as session:
-        stmt = select(Ability.ability).distinct().order_by(func.random()).limit(1)
-        a = session.execute(stmt).first()
+        stmt = select(Ability.ability).distinct()
+        a = sample(session.execute(stmt).all(),1)
         if a == None:
             raise HTTPException(status_code=500, detail=ABILITY_404_ERR)
         return a.tuple()[0]
