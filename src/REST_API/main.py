@@ -9,6 +9,7 @@ from sqlalchemy import select, func, desc
 from random import sample
 import requests
 import image_webscraping
+import REST_API.image_webscraping as image_webscraping
 import os
 
 
@@ -293,32 +294,41 @@ def get_random_ability():
             raise HTTPException(status_code=500, detail=ABILITY_404_ERR)
         return a.tuple()[0]
 
+    
 
-# get pokemon_image
+# Endpoint para obtener la imagen de un Pokémon
 @app.get("/pokemon_img/{id}")
-def get_pokemon_img(id: int):
-    with Session(engine) as session:
-        stmt = select(Pokemon.name).where(Pokemon.id == id)
-        n = session.execute(stmt).first()           
-
-    url, filename = image_webscraping.get_pokemon_img(n)
+def get_pokemon_img_endpoint(id: str):
+    # Obtener la URL y el nombre de archivo de la imagen usando la función de image_webscraping2
+    url, filename = image_webscraping.get_pokemon_img(id)
     
-    save_directory = "/img" 
-    file_path = os.path.join(save_directory, filename)
+    # Verificar si se obtuvo una imagen válida
+    if url:
+        save_directory = "/img"
+        
+        # Construir la ruta completa para guardar la imagen
+        file_path = os.path.join(save_directory, filename)
 
-    # Realiza la solicitud GET para descargar la imagen
-    response = requests.get(url)
-    
-    # Verifica que la solicitud fue exitosa
-    if response.status_code == 200:
-        # Guarda el contenido en un archivo de imagen
-        with open(file_path, 'wb') as file:
-            file.write(response.content)
-            return FileResponse(response)
-            #print(f"Imagen guardada como {filename}")
+        # Comprobar si la imagen ya existe
+        if os.path.exists(file_path):
+            # Si la imagen ya está descargada, no la descargamos nuevamente
+            return FileResponse(file_path)
+        
+        # Descargar la imagen
+        response = requests.get(url)
+
+        # Verificar que la solicitud fue exitosa
+        if response.status_code == 200:
+            # Guardar la imagen en el archivo
+            with open(file_path, 'wb') as file:
+                file.write(response.content)
+
+            # Retornar la imagen guardada como respuesta
+            return FileResponse(file_path)
+        else:
+            return {"error": "Failed to download the image."}
     else:
-        return 0
-    
+        return {"error": "Image not found for this Pokémon ID."}
 
 # Endpoint para obtener el top 10 de usuarios con el ranking más alto
 @app.get("/users/top/{n}")
