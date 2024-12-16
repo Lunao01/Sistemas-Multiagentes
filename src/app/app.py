@@ -255,16 +255,14 @@ def play_get(user_id):
         pokemon_1 = p0,
         pokemon_2 = p1,
         pokemon_a = None, # TODO
-        # img_pokemon_1 = "https://media.vozpopuli.com/2019/10/Pablo-Motos-suele-vacaciones-Javea_1295280471_13960572_660x785.png",
-        # img_pokemon_2 = "https://media.vozpopuli.com/2019/10/Pablo-Motos-suele-vacaciones-Javea_1295280471_13960572_660x785.png",
         img_pokemon_1 = f"{REST_API_CLIENT_URL}/pokemon_img/{d_score[user_id][1][1]['id']}",
         img_pokemon_2 = f"{REST_API_CLIENT_URL}/pokemon_img/{d_score[user_id][1][2]['id']}",
         score = score,
         **GLOBAL_CONTEXT
     )
 
-def poketest(p0,p1, q):
-    if question['type'] == 'compare':
+def poketest(p0,p1,q):
+    if q['type'] == 'compare':
         if q['condition'] == 'less':
             if p0[q['key']] < p1[q['key']]:
                 return p0
@@ -275,12 +273,12 @@ def poketest(p0,p1, q):
                 return p1
             if p0[q['key']] > p1[q['key']]:
                 return p0
-    elif question['type'] == 'specific':
+    elif q['type'] == 'specific':
         if q['property'] in p0[q['key']]:
             return p0
         if q['property'] in p1[q['key']]:
             return p1
-    elif question['type'] == 'choice':
+    elif q['type'] == 'choice':
         if p0[q['key']] == True:
             return p0
         if p1[q['key']] == True:
