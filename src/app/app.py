@@ -68,8 +68,15 @@ def login():
                 return render_template('auth/login.html', message="Incorrect password.",**GLOBAL_CONTEXT)
 
     else: # Si es GET se renderiza la página login.html
+        with Session(engine) as session:
+            if request.cookies.get(SESSION) != None:
+                stmt = select(Cookie).where(Cookie.id == request.cookies.get(SESSION))
+                c = session.execute(stmt).first()
+                if c == None:
+                    return render_template('auth/login.html',**GLOBAL_CONTEXT) # ruta de la plantilla html index
+                else:
+                    return redirect(url_for('menu'))
         return render_template('auth/login.html',**GLOBAL_CONTEXT) # ruta de la plantilla html index
-
 
 # Register
 @app.route('/register', methods=['GET', 'POST'])
@@ -139,9 +146,6 @@ def play():
             return play_get(user_id) # cant be unbound, since if user != none implies that conditional in line 126 was run
 
         if request.method == 'POST':
-            if 'exit' in request.args.keys():
-                del d_score[user_id]
-                return ''
             
             question = request.args.to_dict()
             del question['pokemon1']
@@ -175,62 +179,21 @@ def play():
 
             correct = False
             poke_a = poketest(poke1,poke2,question)
-            poke_guess['id'] == poke_a
-            if question['type'] == 'compare':
-                if poke1[question['key']] < poke2[question['key']]:
-                    if poke_guess['id']==poke1['id']:
-                        correct = question['condition']=='less'
-                    elif poke_guess['id']==poke2['id']:
-                        correct = question['condition']=='more'
-                    else:
-                        raise Exception()
-                elif poke1[question['key']] > poke2[question['key']]:                        
-                    if poke_guess['id']==poke1['id']:
-                        correct = question['condition']=='more'
-                    elif poke_guess['id']==poke2['id']:
-                        correct = question['condition']=='less'
-                    else:
-                        raise Exception()
-                elif poke1[question['key']] == poke2[question['key']]:
-                    if poke_guess['id']==poke1['id'] or poke_guess['id'] == poke2['id']:
-                        correct = True
-                    else:
-                        raise Exception()
-            elif question['type'] == 'specific':
-                r = []
-                if question['property'] in poke1[question['key']]:
-                    r.append(poke1['id'])
-                if question['property'] in poke2[question['key']]:
-                    r.append(poke2['id'])
-                if poke_guess['id'] in r:
-                    correct = True
-            elif question['type'] == 'choice':
-                if poke1[question['key']]:
-                    r = poke1
-                elif poke2[question['key']]:
-                    r = poke2
-                else:
-                    raise Exception("Unreachable code")
-                
-                if r['id'] == poke_guess['id']:
-                    correct = True
-            else:
-                raise Exception("Guessed invalid question (Nonexistant type).")
-            
-            if correct:
-                gen_question(user_id)
+            if poke_guess['id'] in poke_a:
+                d_score[user_id][1] = gen_question(user_id)
                 d_score[user_id][0] += 1
                 return play_get(user_id)
             else:
                 p = d_score[user_id][0]
-                d_score[user_id] = FAIL_REDIR
+                del d_score[user_id]
                 with Session(engine) as session:
                     stmt = select(User).where(User.id == user_id)
                     u = session.execute(stmt).first()
                     assert u is not None
                     u = u.tuple()[0]
                     u.scores.append(Score(score=p))
-                return ""
+                    session.commit()
+                return render_template("play/you_lose.html", score=p)
                 
     
     else:
@@ -238,16 +201,20 @@ def play():
 
 
 def play_get(user_id):
+    if 'new_game' in request.args.keys() and d_score.get(user_id) != None:
+        del d_score[user_id]
     # Si para el usuario es su primera pregunta, se añade al diccionario 
     if d_score.get(user_id) == None:
-        d_score[user_id] = [0, None]
-        gen_question(user_id)
-    if d_score.get(user_id) == FAIL_REDIR:
-        del d_score[user_id]
-        return render_template('play/you_lose.html', score = 0)
+        d_score[user_id] = [0, gen_question(user_id)]
+    # if d_score.get(user_id)[1] == None:
+    #     score = d_score.get(user_id)[0]
+    #     del d_score[user_id]
+    #     return render_template('play/you_lose.html', score = score)
     
     # Información de la pregunta 
     score, (question,p0,p1) =  d_score[user_id]
+    if question['type']=='specific':
+        question['question'] = question['question'].format(X=question['property'])
     
     return render_template(
         'play/play.html',
@@ -261,30 +228,38 @@ def play_get(user_id):
         **GLOBAL_CONTEXT
     )
 
-def poketest(p0,p1,q):
+def poketest(p0:dict[str,Any],p1:dict[str,Any],q:dict[str,Any]) -> tuple:
     if q['type'] == 'compare':
         if q['condition'] == 'less':
             if p0[q['key']] < p1[q['key']]:
-                return p0
-            if p0[q['key']] > p1[q['key']]:
-                return p1
+                return (p0['id'],)
+            elif p0[q['key']] > p1[q['key']]:
+                return (p1['id'],)
+            else: # p0[q['key']] == p1[q['key']]
+                return (p0['id'],p1['id'])
         if q['condition'] == 'more':
             if p0[q['key']] < p1[q['key']]:
-                return p1
-            if p0[q['key']] > p1[q['key']]:
-                return p0
+                return (p1['id'],)
+            elif p0[q['key']] > p1[q['key']]:
+                return (p0['id'],)
+            else: # p0[q['key']] == p1[q['key']]
+                return (p0['id'],p1['id'])
     elif q['type'] == 'specific':
         if q['property'] in p0[q['key']]:
-            return p0
-        if q['property'] in p1[q['key']]:
-            return p1
+            return (p0['id'],)
+        elif q['property'] in p1[q['key']]:
+            return (p1['id'],)
+        else:
+            raise Exception("Unreachable code. Neither of the pokemons were valid (or both were).")
     elif q['type'] == 'choice':
-        if p0[q['key']] == True:
-            return p0
-        if p1[q['key']] == True:
-            return p1
-
-    raise Exception("Unreachable code")
+        if p0[q['key']] == True and p1[q['key']] == False:
+            return (p0['id'],)
+        elif p1[q['key']] == True and p0[q['key']] == False:
+            return (p1['id'],)
+        else:
+            raise Exception("Unreachable code. Neither of the pokemons were valid (or both were).")
+    else:
+        raise Exception("Unreachable code. Invalid question")
 
 def gen_question(user_id):
     question = question_generator.generate_question()
@@ -292,12 +267,21 @@ def gen_question(user_id):
     # Datos para hacer la pregunta
     url = f"{REST_API_URL}/search_pokemon/{question['key']}"
     if question_type == "specific":
-        chosen_property:str = requests.get(f"{REST_API_URL}/search_misc/random/{question['key']}").json()
+        _chosen_property = requests.get(f"{REST_API_URL}/search_misc/random/{question['key']}")
+        if _chosen_property.status_code != 200:
+            raise Exception(f"API Call to {REST_API_URL}/search_misc/random/{question['key']} returned status code {_chosen_property.status_code}.")
+        chosen_property:str = _chosen_property.json()
+        del _chosen_property
+
         url = f"{url}/{chosen_property}"
         question["property"] = chosen_property
         question["question"].format(X=chosen_property)
-    response:Tuple[dict[str,Any],dict[str,Any]] = requests.get(url).json()
-    d_score[user_id][1] = (question,*response)
+    _response = requests.get(url)
+    if _response.status_code != 200:
+        raise Exception(f"API Call to {url} returned status code {_response.status_code}.")
+    response:Tuple[dict[str,Any],dict[str,Any]] = _response.json()
+    assert len(response) == 2
+    return (question,*response)
 
 # Pokedex
 @app.route('/menu/pokedex')

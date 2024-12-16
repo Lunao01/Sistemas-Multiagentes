@@ -70,7 +70,7 @@ def get_random_two_pokemons_weight():
         return pokemons
 
 # get two random pokemons where one is legendary and the other is not
-@app.get("/search_pokemon/legendary")
+@app.get("/search_pokemon/is_legendary")
 def get_random_legendary_pokemon_and_not():
     with Session(engine) as session:
         # Select one legendary Pokémon and one non-legendary Pokémon
@@ -282,7 +282,7 @@ def get_random_type():
         t = sample(session.execute(stmt).all(),1)
         if t == None:
             raise HTTPException(status_code=500, detail=TYPE_404_ERR)
-        return t.tuple()[0]
+        return t[0][0]
 
 @app.get("/search_misc/random/abilities")
 def get_random_ability():
@@ -291,7 +291,7 @@ def get_random_ability():
         a = sample(session.execute(stmt).all(),1)
         if a == None:
             raise HTTPException(status_code=500, detail=ABILITY_404_ERR)
-        return a.tuple()[0]
+        return a[0][0]
 
     
 

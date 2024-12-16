@@ -36,7 +36,7 @@
 
 <script>
     document.getElementById("playBtn").addEventListener("click", function() {
-        window.location.href = "{{ url_for('play') }}";  // Redirige a la ruta de Play
+        window.location.href = "{{ url_for('play') }}?new_game=1";  // Redirige a la ruta de Play
     });
 
     document.getElementById("pokedexBtn").addEventListener("click", function() {

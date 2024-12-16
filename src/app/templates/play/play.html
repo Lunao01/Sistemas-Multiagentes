@@ -16,15 +16,35 @@
 
     <!-- Contenedor de botones con imágenes de Pokémon -->
     <div class="buttons-container">
-      <button class="pokemon-btn" id="pokemon-1-btn">
-        <img src={{ img_pokemon_1 }} alt="{{name_pokemon_1}}">
-        <span class="pokemon-name">{{pokemon_1.name}}</span>
-      </button>
+      <form method="POST"
+            action="{{ url_for('play') }}?{#
+          #}{{'key='~question.key~('&'|safe)}}{#
+          #}{{'type='~question.type~('&'|safe)}}{#
+          #}{{'condition='~question.condition~('&'|safe)}}{#
+          #}{% if 'property' in question %}{{'property='~question.property}}{%endif%}{#
+          #}&pokemon1={{pokemon_1.id}}{#
+          #}&pokemon2={{pokemon_2.id}}{#
+          #}&pokemon_guess={{pokemon_1.id}}">
+        <button type="submit" class="pokemon-btn" id="pokemon-1-btn">
+          <img src={{ img_pokemon_1 }} alt="{{name_pokemon_1}}">
+          <span class="pokemon-name">{{pokemon_1.name}}</span>
+        </button>
+      </form>
 
-      <button class="pokemon-btn" id="pokemon-2-btn">
-        <img width="256" src={{ img_pokemon_2 }} alt="{{name_pokemon_2}}">
-        <span class="pokemon-name">{{pokemon_2.name}}</span>
-      </button>
+      <form method="post"
+            action="{{ url_for('play') }}?{#
+          #}{{'key='~question.key~('&'|safe)}}{#
+          #}{{'type='~question.type~('&'|safe)}}{#
+          #}{{'condition='~question.condition~('&'|safe)}}{#
+          #}{% if 'property' in question %}{{'property='~question.property}}{%endif%}{#
+          #}&pokemon1={{pokemon_1.id}}{#
+          #}&pokemon2={{pokemon_2.id}}{#
+          #}&pokemon_guess={{pokemon_2.id}}">
+        <button class="pokemon-btn" id="pokemon-2-btn">
+          <img width="256" src={{ img_pokemon_2 }} alt="{{name_pokemon_2}}">
+          <span class="pokemon-name">{{pokemon_2.name}}</span>
+        </button>
+      </form>
     </div>
 
     <!-- Score en la parte inferior derecha -->
@@ -34,38 +54,9 @@
 
     <!-- Menú superior derecho -->
     <div class="top-menu">
-        <img id="exitBtn" src="https://img.icons8.com/ios-filled/50/000000/delete-sign.png" alt="Cross" class="icon">
+        <a href="/menu">
+          <img id="exitBtn" src="https://img.icons8.com/ios-filled/50/000000/delete-sign.png" alt="Cross" class="icon">
+        </a>
     </div>
   </div>
-  <script> 
-    const questionKey = "{{ question_key }}"
-
-    // Eventos para cada posible opción (pokémon 1 vs pokémon 2)
-    document.getElementById("pokemon-1-btn").addEventListener("click", function() {
-        url = "{{ url_for('play') }}" + 
-            "?{{'key='~question.key~('&'|safe)}}{{'type='~question.type~('&'|safe)}}{{'condition='~question.condition}}" +
-            "&pokemon1={{pokemon_1.id}}" +
-            "&pokemon2={{pokemon_2.id}}" +
-            "&pokemon_guess={{pokemon_1.id}}";
-        fetch(url, {method: "POST"});
-        window.location.reload();
-    });
-
-    document.getElementById("pokemon-2-btn").addEventListener("click", function() {
-        url = "{{ url_for('play') }}" + 
-            "?{{'key='~question.key~('&'|safe)}}{{'type='~question.type~('&'|safe)}}{{'condition='~question.condition}}" +
-            "&pokemon1={{pokemon_1.id}}" +
-            "&pokemon2={{pokemon_2.id}}" +
-            "&pokemon_guess={{pokemon_2.id}}";
-        fetch(url, {method: "POST"});
-        window.location.reload();
-    });
-
-    // Salir del modo juego
-    document.getElementById("exitBtn").addEventListener("click", function() {
-      url = "{{ url_for('play') }}?exit=1";
-      fetch(url, {method: "POST"});
-      window.location.href = "{{ url_for('menu') }}";
-    });
-</script>
 {% endblock %}
