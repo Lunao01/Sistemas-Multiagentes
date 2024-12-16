@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>X Data - PokeQuest</title>
+    <link rel="stylesheet" href="pokedex_info_styles.css">
+</head>
+<body>
+    <div class="pokedex">
+        <div class="header">Pokédex</div>
+        <div class="screen">
+            <div class="pokemon-image">
+                <img src="pikachu.jpg" alt="Pokemon Image" id="pokemon-image">
+            </div>
+            <div class="pokemon-info">
+                <div class="info" id="pokemon-id">ID: 25</div>
+                <div class="info" id="pokemon-name">Name: Pikachu</div>
+                <div class="info" id="pokemon-types">Type: Fire</div>
+                <div class="info" id="pokemon-height">Height: 0.4m</div>
+                <div class="info" id="pokemon-weight">Weight: 6kg</div>
+                <div class="info" id="pokemon-habitat">Habitat: Forest</div>
+                <div class="info" id="pokemon-habilities">Abilities: overgrow, chlorophyll</div>
+                <div class="info" id="pokemon-is-legendary">Legendary: No</div>
+            </div>
+        </div>
+        <div class="stats">
+            <div class="stat-bar">
+                <span>HP</span>
+                <div style="width: 20%;"></div>
+            </div>
+            <div class="stat-bar">
+                <span>Attack</span>
+                <div style="width: 60%;"></div>
+            </div>
+            <div class="stat-bar">
+                <span>Defense</span>
+                <div style="width: 40%;"></div>
+            </div>
+            <div class="stat-bar">
+                <span>Special attack</span>
+                <div style="width: 85%;"></div>
+            </div>
+            <div class="stat-bar">
+                <span>Special defense</span>
+                <div style="width: 42%;"></div>
+            </div>
+            <div class="stat-bar">
+                <span>Speed</span>
+                <div style="width: 80%;"></div>
+            </div>
+        </div>
+    </div>
+        <!-- Menú superior derecho -->
+    <div class="top-menu">
+            <img id="exitBtn" src="https://img.icons8.com/ios-filled/50/000000/delete-sign.png" alt="Cross" class="icon">
+    </div>
+    <script>
+        // Seleccionamos todas las barras
+        const bars = document.querySelectorAll('.stat-bar div');
+    
+        bars.forEach(bar => {
+            // Obtenemos el ancho de la barra como número
+            const width = parseInt(bar.style.width);
+    
+            // Aplicamos colores según el rango
+            if (width < 30) {
+                bar.style.backgroundColor = '#990000'; 
+            } else if (width < 60) {
+                bar.style.backgroundColor = '#ff8f00';
+            } else {
+                bar.style.backgroundColor = '#00ff04'; 
+            }
+        });
+    </script>
+</body>
+</html>
