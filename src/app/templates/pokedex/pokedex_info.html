@@ -1,53 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X Data - PokeQuest</title>
-    <link rel="stylesheet" href="pokedex_info_styles.css">
-</head>
-<body>
+{% extends "./base.html" %}
+
+{% block title %}Pokédex- PokeQuest{% endblock %}
+
+{% block customCSS %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pokedex_info_styles.css')}}">
+{% endblock %}
+
+{% block body %}
     <div class="pokedex">
         <div class="header">Pokédex</div>
         <div class="screen">
             <div class="pokemon-image">
-                <img src="https://images.wikidexcdn.net/mwuploads/wikidex/9/9a/latest/20190414143916/Snivy.png" alt="Pokemon Image" id="pokemon-image">
+                <img src={{ img }} alt="Pokemon Image" id="pokemon-image">
             </div>
             <div class="pokemon-info">
-                <div class="info" id="pokemon-id">ID: 25</div>
-                <div class="info" id="pokemon-name">Name: Pikachu</div>
-                <div class="info" id="pokemon-types">Type: Fire</div>
-                <div class="info" id="pokemon-height">Height: 0.4m</div>
-                <div class="info" id="pokemon-weight">Weight: 6kg</div>
-                <div class="info" id="pokemon-habitat">Habitat: Forest</div>
-                <div class="info" id="pokemon-habilities">Abilities: overgrow, chlorophyll</div>
-                <div class="info" id="pokemon-is-legendary">Legendary: No</div>
+                <div class="info" id="pokemon-id">ID: {{ id }}</div>
+                <div class="info" id="pokemon-name">Name: {{ name }}</div>
+                <div class="info" id="pokemon-types">Type: {{ type }}</div>
+                <div class="info" id="pokemon-height">Height: {{ height }}m</div>
+                <div class="info" id="pokemon-weight">Weight: {{ weight }}kg</div>
+                <div class="info" id="pokemon-habitat">Habitat: {{ habitat }}</div>
+                <div class="info" id="pokemon-habilities">Abilities: {{ abilities }}</div>
+                <div class="info" id="pokemon-is-legendary">Legendary: {{ legendary }}</div>
             </div>
         </div>
         <div class="stats">
             <div class="stat-bar">
                 <span>HP</span>
-                <div style="width: 20%;"></div>
+                <div style="width: {{ hp }}%;"></div>
             </div>
             <div class="stat-bar">
                 <span>Attack</span>
-                <div style="width: 60%;"></div>
+                <div style="width: {{ attack }}%;"></div>
             </div>
             <div class="stat-bar">
                 <span>Defense</span>
-                <div style="width: 40%;"></div>
+                <div style="width: {{ defense }}%;"></div>
             </div>
             <div class="stat-bar">
                 <span>Special attack</span>
-                <div style="width: 85%;"></div>
+                <div style="width: {{ special_attack }}%;"></div>
             </div>
             <div class="stat-bar">
                 <span>Special defense</span>
-                <div style="width: 42%;"></div>
+                <div style="width: {{ special_defense }}%;"></div>
             </div>
             <div class="stat-bar">
                 <span>Speed</span>
-                <div style="width: 80%;"></div>
+                <div style="width: {{ speed }}%;"></div>
             </div>
         </div>
     </div>
@@ -75,3 +75,4 @@
     </script>
 </body>
 </html>
+{% endblock %}
