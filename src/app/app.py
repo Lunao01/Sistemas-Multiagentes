@@ -244,7 +244,7 @@ def play_get(user_id):
         gen_question(user_id)
     if d_score.get(user_id) == FAIL_REDIR:
         del d_score[user_id]
-        return redirect(url_for('menu/end_screen'))
+        return render_template('play/you_lose.html', score = 0)
     
     # Información de la pregunta 
     score, (question,p0,p1) =  d_score[user_id]
@@ -350,6 +350,21 @@ def ranking():
     else:
         return redirect(url_for('login'))
 
+# Lose menu
+@app.route('/menu/play/lose')
+def lose():
+    # Se debe comprobar si el usuario inició sesión (cookies)
+    with Session(engine) as session:
+        if request.cookies.get(SESSION) != None:
+            stmt = select(User).join(Cookie).where(Cookie.id == request.cookies.get(SESSION))
+            user = session.scalar(stmt)
+        else:
+            user = None
+
+    if user != None:
+        return render_template('play/you_lose.html')
+    else:
+        return redirect(url_for('login'))
 
 # Generate a hash
 def hash_gen(n:str)->str:

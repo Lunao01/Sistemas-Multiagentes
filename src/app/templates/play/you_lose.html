@@ -1,0 +1,19 @@
+{% extends "./base.html" %}
+
+{% block title %}You Lose! - PokeQuest{% endblock %}
+
+{% block customCSS %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/you_lose_styles.css')}}">
+{% endblock %}
+
+{% block body %}
+    <img src="{{ url_for('static', filename='img/you_lose.jpg') }}" alt="Background" class="background-img">
+    <h1>You Lose!</h1>
+    <p>Score = {{ score }}</p>
+    <button id="goBackBtn">Go Back</button>
+    <script>
+        document.getElementById("goBackBtn").addEventListener("click", function() {
+            window.location.href = "{{ url_for('menu') }}";  // Redirige a la ruta del menú
+        });
+    </script>
+{% endblock %}
