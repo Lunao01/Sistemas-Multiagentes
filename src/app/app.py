@@ -14,7 +14,8 @@ import requests
 
 app = Flask(__name__)
 SESSION = "session"
-BASE_URL = "http://rest_api:8000"
+REST_API_URL = "http://rest_api:8000"
+REST_API_CLIENT_URL = "http://localhost:8000"
 d_score:dict[int,Any] = dict() # Guardar el puntaje del usuario en la partida
 GLOBAL_CONTEXT = {
     "base_url": "http://localhost:5000",
@@ -147,7 +148,7 @@ def play():
             del question['pokemon2']
             del question['pokemon_guess']
 
-            _poke1:requests.Response = requests.get(f"{BASE_URL}/pokemon/{request.args['pokemon1']}")
+            _poke1:requests.Response = requests.get(f"{REST_API_URL}/pokemon/{request.args['pokemon1']}")
             if _poke1.status_code == 404:
                 ERRMSG = "404 pokemon not found. This is an internal server error, please report this issue to the devs"
                 return render_template('play/play.html', message = ERRMSG,**GLOBAL_CONTEXT)
@@ -156,7 +157,7 @@ def play():
             del _poke1
                 
             
-            _poke2:requests.Response = requests.get(f"{BASE_URL}/pokemon/{request.args['pokemon2']}")
+            _poke2:requests.Response = requests.get(f"{REST_API_URL}/pokemon/{request.args['pokemon2']}")
             if _poke2.status_code == 404:
                 ERRMSG = "404 pokemon not found. This is an internal server error, please report this issue to the devs"
                 return render_template('play/play.html', message = ERRMSG,**GLOBAL_CONTEXT)
@@ -164,7 +165,7 @@ def play():
             poke2:dict = _poke2.json()
             del _poke2
 
-            _poke_guess:requests.Response = requests.get(f"{BASE_URL}/pokemon/{request.args['pokemon_guess']}")
+            _poke_guess:requests.Response = requests.get(f"{REST_API_URL}/pokemon/{request.args['pokemon_guess']}")
             if _poke_guess.status_code == 404:
                 ERRMSG = "404 pokemon not found. This is an internal server error, please report this issue to the devs"
                 return render_template('play/play.html', message = ERRMSG,**GLOBAL_CONTEXT)
@@ -177,16 +178,22 @@ def play():
                 if poke1[question['key']] < poke2[question['key']]:
                     if poke_guess['id']==poke1['id']:
                         correct = question['condition']=='less'
-                    if poke_guess['id']==poke2['id']:
+                    elif poke_guess['id']==poke2['id']:
                         correct = question['condition']=='more'
+                    else:
+                        raise Exception()
                 elif poke1[question['key']] > poke2[question['key']]:                        
                     if poke_guess['id']==poke1['id']:
                         correct = question['condition']=='more'
-                    if poke_guess['id']==poke2['id']:
+                    elif poke_guess['id']==poke2['id']:
                         correct = question['condition']=='less'
+                    else:
+                        raise Exception()
                 elif poke1[question['key']] == poke2[question['key']]:
                     if poke_guess['id']==poke1['id'] or poke_guess['id'] == poke2['id']:
                         correct = True
+                    else:
+                        raise Exception()
             elif question['type'] == 'specific':
                 r = []
                 if question['property'] in poke1[question['key']]:
@@ -245,10 +252,10 @@ def play_get(user_id):
         question = question,
         pokemon_1 = p0,
         pokemon_2 = p1,
-        img_pokemon_1 = "https://media.vozpopuli.com/2019/10/Pablo-Motos-suele-vacaciones-Javea_1295280471_13960572_660x785.png",
-        img_pokemon_2 = "https://media.vozpopuli.com/2019/10/Pablo-Motos-suele-vacaciones-Javea_1295280471_13960572_660x785.png",
-        # img_pokemon_1 = f"{BASE_URL}/pokemon_img/{d_score[user.id][1][1]['id']}",
-        # img_pokemon_2 = f"{BASE_URL}/pokemon_img/{d_score[user.id][1][2]['id']}",
+        #img_pokemon_1 = "https://media.vozpopuli.com/2019/10/Pablo-Motos-suele-vacaciones-Javea_1295280471_13960572_660x785.png",
+        #img_pokemon_2 = "https://media.vozpopuli.com/2019/10/Pablo-Motos-suele-vacaciones-Javea_1295280471_13960572_660x785.png",
+        img_pokemon_1 = f"{REST_API_CLIENT_URL}/pokemon_img/{d_score[user_id][1][1]['id']}",
+        img_pokemon_2 = f"{REST_API_CLIENT_URL}/pokemon_img/{d_score[user_id][1][2]['id']}",
         score = score,
         **GLOBAL_CONTEXT
     )
@@ -256,10 +263,10 @@ def play_get(user_id):
 def gen_question(user_id):
     question = question_generator.generate_question()
     question_type = question['type']
-        # Datos para hacer la pregunta
-    url = f"{BASE_URL}/search_pokemon/{question['key']}"
+    # Datos para hacer la pregunta
+    url = f"{REST_API_URL}/search_pokemon/{question['key']}"
     if question_type == "specific":
-        chosen_property:str = requests.get(f"{BASE_URL}/search_misc/random/{question['key']}").json()
+        chosen_property:str = requests.get(f"{REST_API_URL}/search_misc/random/{question['key']}").json()
         url = f"{url}/{chosen_property}"
         question["property"] = chosen_property
         question["question"].format(X=chosen_property)
