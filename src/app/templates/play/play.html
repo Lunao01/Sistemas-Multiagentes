@@ -16,16 +16,14 @@
 
     <!-- Contenedor de botones con imágenes de Pokémon -->
     <div class="buttons-container">
-      <button id="pokemon-1-btn">
+      <button class="pokemon-btn" id="pokemon-1-btn">
         <img src={{ img_pokemon_1 }} alt="{{name_pokemon_1}}">
-        <br>
-        {{pokemon_1.name}}
+        <span class="pokemon-name">{{pokemon_1.name}}</span>
       </button>
 
-      <button id="pokemon-2-btn">
+      <button class="pokemon-btn" id="pokemon-2-btn">
         <img width="256" src={{ img_pokemon_2 }} alt="{{name_pokemon_2}}">
-        <br>
-        {{pokemon_2.name}}
+        <span class="pokemon-name">{{pokemon_2.name}}</span>
       </button>
     </div>
 
