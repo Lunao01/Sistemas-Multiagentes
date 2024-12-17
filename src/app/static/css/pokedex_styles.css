@@ -29,6 +29,8 @@ body {
     padding: 10px;
     text-align: center;
     vertical-align: middle;
+    width: 20%; /* Forzamos un ancho fijo para las celdas */
+    height: 250px; /* Forzamos una altura fija para las celdas */
 }
 
 .pokemon-card {
