@@ -343,7 +343,25 @@ def pokedex():
 # Pokedex/Pokemon
 @app.route('/menu/pokedex/{pokemon_name}')
 def pokemon_info(pokemon_name):
-    return render_template('pokedex/pokedex.html')
+    # Se debe comprobar si el usuario inició sesión (cookies)
+    with Session(engine) as session:
+        if request.cookies.get(SESSION) != None:
+            stmt = select(User).join(Cookie).where(Cookie.id == request.cookies.get(SESSION))
+            user = session.execute(stmt).first()
+        else:
+            user = None
+
+        if user != None:
+            # Buscamos el pokemon en la base de datos
+            stmt = select(Pokemon).where(Pokemon.name == pokemon_name)
+            pokemon = session.scalar(stmt)
+
+            # Imagen del pokemon
+            img_pokemon = f"{REST_API_CLIENT_URL}/pokemon_img/{pokemon.id}",
+
+            return render_template('pokedex/pokedex.html',img=img_pokemon, id=pokemon.id, name=pokemon.name, type=pokemon.types, height=pokemon.height, weight=pokemon.weight, habitat=pokemon.habitat, abilities=pokemon.abilities, legendary=pokemon.is_legendary)
+        else:
+            return redirect(url_for('login'))
 
 # Ranking
 @app.route('/menu/ranking')
