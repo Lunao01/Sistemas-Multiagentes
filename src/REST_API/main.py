@@ -19,6 +19,7 @@ TYPE_404_ERR = "Type given doesn't exist"
 POKEMON_404_ERR = "Pokemon not found"
 ABILITY_404_ERR = "ability not found"
 RANKING_404_ERR = "Error in ranking"
+NOT_UNLOCKED_POKEMON = "NO UNLOCKED POKÉMON FOUND"
 
 # Inicializar la app
 app = FastAPI()
@@ -328,6 +329,7 @@ def get_pokemon_img_endpoint(id: str):
             return {"error": "Failed to download the image."}
     else:
         return {"error": "Image not found for this Pokémon ID."}
+    
 
 # Endpoint para obtener el top 10 de usuarios con el ranking más alto
 @app.get("/users/top/{n}")

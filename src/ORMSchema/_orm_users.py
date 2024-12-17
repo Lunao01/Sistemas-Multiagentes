@@ -28,7 +28,7 @@ class User(Base):
     )  # for sha512, the hash algorithm used
     cookies: Mapped[List["Cookie"]] = relationship(cascade="all, delete-orphan")
     scores: Mapped[List["Score"]] = relationship(cascade="all, delete-orphan")
-
+    unlocked_pokemon: Mapped[List["Pokemon"]] = relationship(secondary=pokemon_unlocked_by)
 
 class Cookie(Base):
     __tablename__ = "cookies"

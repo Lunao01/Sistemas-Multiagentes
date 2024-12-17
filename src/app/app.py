@@ -3,7 +3,7 @@ from typing import Any, List
 from urllib.parse import unquote
 from flask import Flask, render_template, request, redirect, url_for
 from config import config # archivo config.py
-from ORMSchema import engine, User, Cookie, GrowthRate, Score
+from ORMSchema import engine, User, Cookie, GrowthRate, Score, Pokemon
 from sqlalchemy.orm import Session
 from sqlalchemy import alias, column, desc, func, select
 import hashlib 
@@ -199,6 +199,22 @@ def play():
             if poke_guess['id'] in poke_a:
                 d_score[user_id][1] = gen_question(user_id)
                 d_score[user_id][0] += 1
+
+                # Desbloquear pokemon:
+                with Session(engine) as session:
+                    if request.cookies.get(SESSION) != None:
+                        # Pokémon desbloqueado
+                        stmt = select(Pokemon).where(poke_guess['id'] == Pokemon.id)
+                        pokemon = session.scalar(stmt)
+
+                        # Usuario de la sesión
+                        stmt = select(User).where(User.id == user_id)
+                        user = session.scalar(stmt)
+                
+                        user.unlocked_pokemon.append(pokemon)
+
+                    session.commit()
+
                 return play_get(user_id)
             else:
                 p = d_score[user_id][0]
@@ -311,12 +327,23 @@ def pokedex():
         else:
             user = None
 
-    if user != None:
-        return render_template('pokedex/pokedex.html', **GLOBAL_CONTEXT)
-    else:
-        return redirect(url_for('login'))
-    
+        if user != None:
+            # Buscamos los pokemon desbloqueados por el usuario
+            unlocked_pokemon_list = []
+            for p in user.unlocked_pokemon:
+                pokemon_img = f"{REST_API_CLIENT_URL}/pokemon_img/{p.id}"
+                pokemon_name = p.name
+                unlocked_pokemon_list.append([pokemon_name, pokemon_img])
 
+            return render_template('pokedex/pokedex.html', unlocked_pokemon_list=unlocked_pokemon_list)
+        
+        else:
+            return redirect(url_for('login'))
+        
+# Pokedex/Pokemon
+@app.route('/menu/pokedex/{pokemon_name}')
+def pokemon_info(pokemon_name):
+    return render_template('pokedex/pokedex.html')
 
 # Ranking
 @app.route('/menu/ranking')
@@ -392,6 +419,7 @@ def lose():
         return render_template('play/you_lose.html')
     else:
         return redirect(url_for('login'))
+
 
 # Generate a hash
 def hash_gen(n:str)->str:

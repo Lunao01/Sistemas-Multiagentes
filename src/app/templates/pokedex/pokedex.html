@@ -3,18 +3,45 @@
 {% block title %}Pokédex - PokeQuest{% endblock %}
 
 {% block customCSS %}
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/pokedex_styles.css')}}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pokedex_styles.css') }}">
 {% endblock %}
 
 {% block body %}
-    <main>
-        <section id="pokedex-grid" class="pokedex-grid">
-            <!-- Aquí se agregarán dinámicamente los Pokémon -->
-        </section>
-        <button id="load-more" class="load-more">Load More</button>
-    </main>
-    <footer>
-        <p>© 2024 - PokeQuest</p>
-    </footer>
-    <script src="{{ url_for('static', filename='js/pokedex.js') }}"></script>
+<div class="logo">
+    <img src="{{ url_for('static', filename='img/logo_2.png') }}" alt="Logo del juego">
+  </div>
+<main>
+    <section id="pokedex-grid" class="pokedex-grid">
+        <table class="unlocked_pokemon">
+            {% for row in unlocked_pokemon_list|batch(5) %}
+            <tr>
+                {% for pokemon in row %}
+                <td>
+                    <button class="pokemon-card" onclick="viewPokemon('{{ pokemon[0] }}')">
+                        <img src="{{ pokemon[1] }}" alt="{{ pokemon[0] }}" class="pokemon-image">
+                        <p class="pokemon-name">{{ pokemon[0] }}</p>
+                    </button>
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
+</main>
+<div class="top-menu">
+    <img id="exitBtn" src="https://img.icons8.com/ios-filled/50/000000/delete-sign.png" alt="Exit" class="icon">
+  </div>
+<footer>
+    <p>© 2024 - PokeQuest</p>
+</footer>
+<script>
+    // Función que redirige al hacer clic en el Pokémon
+    function viewPokemon(pokemonName) {
+        window.location.href = "{{ url_for('pokemon_info') }}?pokemon_name=" + pokemonName;
+    }
+    document.getElementById("exitBtn").addEventListener("click", function() {
+        window.location.href = "{{ url_for('menu') }}";  // Redirige al menu
+      });
+</script>
+    
 {% endblock %}
