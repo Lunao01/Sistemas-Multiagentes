@@ -1,11 +1,12 @@
 
+from typing import List
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.responses import FileResponse
 from httpx import HTTPTransport
 from sqlalchemy.orm import Session
 from ORMSchema import Base, Pokemon, Habitat, GrowthRate, Ability, Form, Move, Type, Score, User, engine
 from pokemon import PokemonResponse
-from sqlalchemy import select, func, desc
+from sqlalchemy import select, func, desc, update
 from random import sample
 import requests
 import image_webscraping
@@ -35,9 +36,44 @@ def get_pokemon_by_id(id: int):
             raise HTTPException(status_code=404, detail=POKEMON_404_ERR)
         return PokemonResponse(p)
 
-# Get pokemon image by id
-# @app.get("/pokemon_img/{id}")
-  
+@app.post("/pokemon/new")
+def new_pokemon(pokemon:PokemonResponse):
+    with Session(engine) as session:
+        stmt = select(Pokemon).where(Pokemon.id == pokemon.id)
+        p_db = session.execute(stmt).first()
+        if p_db != None:
+            raise HTTPException(status_code=409, detail=f"Pokemon {p_db[0].name} already has the id {pokemon.id}. Please use a different id.")
+        p=pokemon.to_pokemon()
+        session.add(p)
+        pr = PokemonResponse(p)
+        session.commit()
+    return pr
+        
+
+@app.delete("/pokemon/{id}")
+def delete_pokemon(id:int):
+    with Session(engine) as session:
+        stmt = select(Pokemon).where(Pokemon.id == id)
+        p = session.execute(stmt).first()
+        if p == None:
+            raise HTTPException(status_code=404, detail=POKEMON_404_ERR)
+        pr = PokemonResponse(p)
+        session.delete(p[0])
+        session.commit()
+    return pr
+
+@app.put("/pokemon/{id}")
+def set_pokemon_by_id(id: int, pnew:PokemonResponse):
+    with Session(engine) as session:
+        stmt = select(Pokemon).where(Pokemon.id == id)
+        p = session.execute(stmt).first()
+        if p == None:
+            session.add(pnew.to_pokemon())
+        else:
+            session.delete(p[0])
+            session.add(pnew.to_pokemon())
+    
+
 @app.get("/search_pokemon/random_two")
 def get_random_two_pokemons():
     with Session(engine) as session:

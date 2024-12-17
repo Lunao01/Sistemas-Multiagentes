@@ -1,6 +1,9 @@
 from dataclasses import dataclass
-from ORMSchema import Pokemon, GrowthRate
+from ORMSchema import Pokemon, GrowthRate, Habitat
 from typing import List
+
+from ORMSchema._orm_pokemon import Ability, Move, Type
+
 @dataclass
 class PokemonResponse():
     id: int
@@ -60,3 +63,34 @@ class PokemonResponse():
         self.speed: int = p.speed
         self.evolution: str = p.evolution
         self.evolution_level: int = p.evolution_level
+    
+    def to_pokemon(self):
+        return Pokemon(
+            name = self.name,
+            base_experience = self.base_experience,
+            height = self.height,
+            weight = self.weight,
+            is_default = self.is_default,
+            order = self.order,
+            habitat = list(map(lambda x:Habitat(habitat=x),self.habitat)),
+            growth_rate = self.growth_rate,
+            is_legendary = self.is_legendary,
+            is_mythical = self.is_mythical,
+            gender_rate = self.gender_rate,
+
+            capture_rate = self.capture_rate,
+            base_happiness = self.base_happiness,
+            abilities = list(map(lambda x:Ability(ability=x),self.abilities)),
+            forms = list(map(lambda x:x.form, self.forms)),
+            held_items = self.held_items,
+            moves = list(map(lambda x:Move(move=x),self.moves)),
+            types = list(map(lambda x:Type(type=x),self.types)),
+            hp = self.hp,
+            attack = self.attack,
+            defense = self.defense,
+            special_attack = self.special_attack,
+            special_defense = self.special_defense,
+            speed = self.speed,
+            evolution = self.evolution,
+            evolution_level = self.evolution_level,
+        )

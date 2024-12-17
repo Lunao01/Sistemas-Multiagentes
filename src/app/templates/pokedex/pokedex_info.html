@@ -8,56 +8,71 @@
 
 {% block body %}
     <div class="pokedex">
-        <div class="header">Pokédex</div>
-        <div class="screen">
+    <div class="top-menu">
+        <img id="exitBtn" src="https://img.icons8.com/ios-filled/50/000000/delete-sign.png" alt="Cross" class="icon">
+    </div>
+        <div class="header"><b>Pokédex</b></div>
+        <div class="screen" id="info">
             <div class="pokemon-image">
                 <img src={{ img[0] }} alt="Pokemon Image" id="pokemon-image">
             </div>
             <div class="pokemon-info">
-                <div class="info" id="pokemon-id">ID: {{ id }}</div>
-                <div class="info" id="pokemon-name">Name: {{ name }}</div>
-                <div class="info" id="pokemon-types">Type: {{ type }}</div>
-                <div class="info" id="pokemon-height">Height: {{ height }} dm</div>
-                <div class="info" id="pokemon-weight">Weight: {{ weight }} hg</div>
-                <div class="info" id="pokemon-habitat">Habitat: {{ habitat }}</div>
-                <div class="info" id="pokemon-habilities">Abilities: {{ abilities }}</div>
-                <div class="info" id="pokemon-is-legendary">Legendary: {{ legendary }}</div>
+                <div class="info" id="pokemon-id"><b>ID</b>: {{ id }}</div>
+                <div class="info" id="pokemon-name"><b>Name</b>: {{ name }}</div>
+                <div class="info" id="pokemon-types"><b>Type</b>: {{ type }}</div>
+                <div class="info" id="pokemon-height"><b>Height</b>: {{ height }} dm</div>
+                <div class="info" id="pokemon-weight"><b>Weight</b>: {{ weight }} hg</div>
+                <div class="info" id="pokemon-habitat"><b>Habitat</b>: {{ habitat }}</div>
+                <div class="info" id="pokemon-habilities"><b>Abilities</b>: {{ abilities }}</div>
+                <div class="info" id="pokemon-is-legendary"><b>Legendary</b>: {{ legendary }}</div>
             </div>
         </div>
-        <div class="stats">
-            <div class="stat-bar">
-                <span>HP</span>
-                <div style="width: {{ hp }}%;"></div>
-            </div>
-            <div class="stat-bar">
-                <span>Attack</span>
-                <div style="width: {{ attack }}%;"></div>
-            </div>
-            <div class="stat-bar">
-                <span>Defense</span>
-                <div style="width: {{ defense }}%;"></div>
-            </div>
-            <div class="stat-bar">
-                <span>Special attack</span>
-                <div style="width: {{ special_attack }}%;"></div>
-            </div>
-            <div class="stat-bar">
-                <span>Special defense</span>
-                <div style="width: {{ special_defense }}%;"></div>
-            </div>
-            <div class="stat-bar">
-                <span>Speed</span>
-                <div style="width: {{ speed }}%;"></div>
+        <div class="screen">
+            <div class="stats">
+                <div class="stat-bar">
+                    <span>HP</span>
+                    <div>
+                        <div class="color-bar" style="width: {{ hp }}%;"></div>
+                    </div>
+                </div>
+                <div class="stat-bar">
+                    <span>Attack</span>
+                    <div>
+                        <div class="color-bar" style="width: {{ attack }}%;"></div>
+                    </div>
+                </div>
+                <div class="stat-bar">
+                    <span>Defense</span>
+                    <div>
+                        <div class="color-bar" style="width: {{ defense }}%;"></div>
+                    </div>
+                </div>
+                <div class="stat-bar">
+                    <span>Special attack</span>
+                    <div>
+                        <div class="color-bar" style="width: {{ special_attack }}%;"></div>
+                    </div>
+                </div>
+                <div class="stat-bar">
+                    <span>Special defense</span>
+                    <div>
+                        <div class="color-bar" style="width: {{ special_defense }}%;"></div>
+                    </div>
+                </div>
+                <div class="stat-bar">
+                    <span>Speed</span>
+                    <div>
+                        <div class="color-bar" style="width: {{ speed }}%;"></div>
+                    </div>
+                </div>
             </div>
         </div>
+        
     </div>
         <!-- Menú superior derecho -->
-    <div class="top-menu">
-            <img id="exitBtn" src="https://img.icons8.com/ios-filled/50/000000/delete-sign.png" alt="Cross" class="icon">
-    </div>
     <script>
         // Seleccionamos todas las barras
-        const bars = document.querySelectorAll('.stat-bar div');
+        const bars = document.querySelectorAll('.stat-bar>div .color-bar');
     
         bars.forEach(bar => {
             // Obtenemos el ancho de la barra como número
@@ -78,6 +93,7 @@
         });
         document.getElementById("exitBtn").addEventListener("click", function() {
             window.location.href = "{{ url_for('pokedex') }}";  // Redirige al menu
+            parent.closePokedexInfo();
           });
     </script>
 </body>

@@ -328,13 +328,15 @@ def pokedex():
             user = None
 
         if user != None:
+            pokemon_selected_id = request.args.to_dict().get('pokemon_selected')
+            
             # Buscamos los pokemon desbloqueados por el usuario
             unlocked_pokemon_list = []
             for p in user.unlocked_pokemon:
                 pokemon_img = f"{REST_API_CLIENT_URL}/pokemon_img/{p.id}"
                 unlocked_pokemon_list.append([p.id, p.name, pokemon_img])
 
-            return render_template('pokedex/pokedex.html', unlocked_pokemon_list=unlocked_pokemon_list)
+            return render_template('pokedex/pokedex.html', unlocked_pokemon_list=unlocked_pokemon_list, pokemon_selected_id = pokemon_selected_id)
         
         else:
             return redirect(url_for('login'))
@@ -387,7 +389,7 @@ def pokemon_info():
                     abilities_msg += f"{i.ability}, "
                 abilities_msg += f"{pokemon.abilities[-1].ability}"
             else:
-                abilities_msg = "Undefined"
+                abilities_msg = "Undefined."
 
 
             # Calculamos el mejor valor en cada estadística
@@ -410,12 +412,12 @@ def pokemon_info():
             pokemon_with_highest_speed = session.scalar(stmt)
             
             # Porcentaje para el diagrama de barras en la info del pokemon
-            hp = int((pokemon.hp/pokemon_with_highest_hp.hp)*85)
-            attack = int((pokemon.attack/pokemon_with_highest_attack.attack)*85)
-            defense = int((pokemon.defense/pokemon_with_highest_defense.defense)*85)
-            special_attack = int((pokemon.special_attack/pokemon_with_highest_special_attack.special_attack)*85)
-            special_defense = int((pokemon.special_defense/pokemon_with_highest_special_defense.special_defense)*85)
-            speed = int((pokemon.speed/pokemon_with_highest_speed.speed)*85)
+            hp = int((pokemon.hp/pokemon_with_highest_hp.hp)*100)
+            attack = int((pokemon.attack/pokemon_with_highest_attack.attack)*100)
+            defense = int((pokemon.defense/pokemon_with_highest_defense.defense)*100)
+            special_attack = int((pokemon.special_attack/pokemon_with_highest_special_attack.special_attack)*100)
+            special_defense = int((pokemon.special_defense/pokemon_with_highest_special_defense.special_defense)*100)
+            speed = int((pokemon.speed/pokemon_with_highest_speed.speed)*100)
 
 
 
@@ -437,7 +439,7 @@ def ranking():
             else:
                 user=user[0]
                 
-                user_high_score=max(map(lambda x:x.score,user.scores))
+                user_high_score=max(map(lambda x:x.score,user.scores),default=0)
                 stmt_rank_ms = func.max(Score.score)
                 stmt_rank = (
                     # select(column("ranking"))

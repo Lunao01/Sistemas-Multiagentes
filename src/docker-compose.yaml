@@ -12,7 +12,6 @@ services:
       dockerfile: ./Fetcher/Dockerfile
     volumes: 
       - ../dataset:/dataset:ro # FIXME REMOVE THE COMMENT BEFORE UPLOAD TO MOODLE This is a bit hacky
-      - img:/img
     depends_on:
       - db
   rest_api:

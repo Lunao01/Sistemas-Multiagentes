@@ -10,6 +10,7 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .pokedex {
@@ -21,6 +22,8 @@ body {
     display: flex;
     flex-direction: column;
     position: absolute;
+    top: 20px;
+    bottom: 20px;
 }
 
 .header {
@@ -38,6 +41,9 @@ body {
     border: 5px solid #990000;
     border-radius: 10px;
     padding: 20px;
+}
+
+.screen#info {
     display: grid;
     grid-template-columns: 1fr 2fr;
     gap: 20px;
@@ -76,16 +82,26 @@ body {
 .stat-bar {
     display: flex;
     align-items: center;
+    text-align: right;
     margin: 5px 0;
 }
 
 .stat-bar span {
-    width: 122px;
-    color: white;
+    width: 160px;
+    color: black;
+    font-weight: bold;
+    padding-right: 10px;
 }
 
-.stat-bar div {
-    height: 10px;
+.stat-bar>div {
+    height: 20px;
+    width: 100%;
+    border: 3px solid #990000;
+    border-radius: 5px;
+}
+
+.stat-bar div div.color-bar {
+    height: 100%;
     background-color: #990000;
     width: 0;
     transition: width 0.3s;
@@ -101,8 +117,8 @@ body {
 /* Menú superior con íconos */
 .top-menu {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 10px;
+    right: 5px;
     display: flex;
     gap: 20px;
     align-items: center; 
