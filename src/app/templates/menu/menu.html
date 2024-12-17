@@ -48,7 +48,8 @@
     });
     
     document.getElementById("exitBtn").addEventListener("click", function() {
-      window.location.href = "{{ url_for('login') }}";  // Redirige al login
+      window.location.href = "{{ url_for('menu') }}?logout=1";  // Redirige al login
+
     });
 </script>
 {% endblock %}

@@ -1,11 +1,11 @@
 import json
-from typing import Any, List, Tuple
+from typing import Any, List
 from urllib.parse import unquote
 from flask import Flask, render_template, request, redirect, url_for
 from config import config # archivo config.py
 from ORMSchema import engine, User, Cookie, GrowthRate, Score
 from sqlalchemy.orm import Session
-from sqlalchemy import select
+from sqlalchemy import alias, column, desc, func, select
 import hashlib 
 import base64
 import os
@@ -118,11 +118,26 @@ def menu():
     with Session(engine) as session:
         if request.cookies.get(SESSION) != None:
             stmt = select(User).join(Cookie).where(Cookie.id == request.cookies.get(SESSION))
-            user = session.scalar(stmt)
+            user = session.execute(stmt).first()
+            user = user[0]
+            if user != None:
+                user_id = user.id
         else:
             user = None
 
     if user != None:
+        if request.args.get('logout') != None:
+            with Session(engine) as session:
+                stmt = select(User).where(User.id == user_id)
+                _user = session.execute(stmt).first()
+                assert _user!=None
+                user = _user[0]
+                del _user
+                for n,c in enumerate(user.cookies):
+                    if request.cookies.get(SESSION) ==  c.id:
+                        user.cookies.pop(n)
+                session.commit()
+            return redirect(url_for('login'))
         return render_template('menu/menu.html',**GLOBAL_CONTEXT)
     else:
         return redirect(url_for('login'))
@@ -135,8 +150,10 @@ def play():
     with Session(engine) as session:
         if request.cookies.get(SESSION) != None:
             stmt = select(User).join(Cookie).where(Cookie.id == request.cookies.get(SESSION))
-            user = session.scalar(stmt)
-            user_id = user.id
+            user = session.execute(stmt).first()
+            user = user[0]
+            if user != None:
+                user_id = user.id
         else:
             user = None
 
@@ -190,7 +207,7 @@ def play():
                     stmt = select(User).where(User.id == user_id)
                     u = session.execute(stmt).first()
                     assert u is not None
-                    u = u.tuple()[0]
+                    u = u[0]
                     u.scores.append(Score(score=p))
                     session.commit()
                 return render_template("play/you_lose.html", score=p)
@@ -279,7 +296,7 @@ def gen_question(user_id):
     _response = requests.get(url)
     if _response.status_code != 200:
         raise Exception(f"API Call to {url} returned status code {_response.status_code}.")
-    response:Tuple[dict[str,Any],dict[str,Any]] = _response.json()
+    response:tuple[dict[str,Any],dict[str,Any]] = _response.json()
     assert len(response) == 2
     return (question,*response)
 
@@ -305,29 +322,55 @@ def pokedex():
 @app.route('/menu/ranking')
 def ranking():
     # Se debe comprobar si el usuario inició sesión (cookies)
+
     with Session(engine) as session:
         if request.cookies.get(SESSION) != None:
             stmt = select(User).join(Cookie).where(Cookie.id == request.cookies.get(SESSION))
-            user = session.scalar(stmt)
-        else:
-            user = None
+            user = session.execute(stmt).first()
+            if user==None:
+                user_found=False
+            else:
+                user=user[0]
+                
+                user_high_score=max(map(lambda x:x.score,user.scores))
+                stmt_rank_ms = func.max(Score.score)
+                stmt_rank = (
+                    # select(column("ranking"))
+                    # .select_from(
+                        select(User.id.label("user_id"),User.username, func.rank().over(order_by=desc(stmt_rank_ms)).label("ranking"),stmt_rank_ms)
+                        .join(Score, Score.user_id == User.id)
+                        .group_by(User.id)
+                        .order_by(desc(stmt_rank_ms))
+                    # )
+                    # .where(column("user_id") == user.id)
+                )
+                # HACK i wanted to do the previous one with sql views, but sqlalchemy didnt seem to support it, 
+                # and i couldn't think of a better way, so for now, it will conver the ranking of all users into 
+                # a dict, and look up the current user there. Even if this is not a scalable solution, it should be fine for our use-case
+                ranking:dict[int,int] = dict(map(lambda x: (x[0],x[2]),session.execute(stmt_rank).all()))
+                user_ranking = ranking[user.id]
+                top_users:list[dict[str,str|int]] = list(map(lambda x:{'username':x[1],'high_score':x[3]},session.execute(stmt_rank.limit(10)).all()))
 
-    if user != None:
+                user_found=True
+
+        else:
+            user_found=False
+        del user, stmt
+
+    if user_found:
         
 
-        '''top_users = [
-        {'username': 'AshKetchum', 'high_score': 1500},
-        {'username': 'Misty', 'high_score': 1400},
-        {'username': 'Brock', 'high_score': 1350},
-        {'username': 'GaryOak', 'high_score': 1300},
-        {'username': 'PikachuFan', 'high_score': 1250},
-        {'username': 'AshKetchum', 'high_score': 1500},
-        {'username': 'Misty', 'high_score': 1400},
-        {'username': 'Brock', 'high_score': 1350},
-        {'username': 'GaryOak', 'high_score': 1300},
-        {'username': 'PikachuFan', 'high_score': 1250},]
-        user_ranking = 42 
-        user_high_score = 1000'''
+        # top_users = [
+        # {'username': 'AshKetchum', 'high_score': 1500},
+        # {'username': 'Misty', 'high_score': 1400},
+        # {'username': 'Brock', 'high_score': 1350},
+        # {'username': 'GaryOak', 'high_score': 1300},
+        # {'username': 'PikachuFan', 'high_score': 1250},
+        # {'username': 'AshKetchum', 'high_score': 1500},
+        # {'username': 'Misty', 'high_score': 1400},
+        # {'username': 'Brock', 'high_score': 1350},
+        # {'username': 'GaryOak', 'high_score': 1300},
+        # {'username': 'PikachuFan', 'high_score': 1250},]
 
 
         return render_template('ranking/ranking.html', top_users=top_users, user_ranking=user_ranking, user_high_score=user_high_score)
