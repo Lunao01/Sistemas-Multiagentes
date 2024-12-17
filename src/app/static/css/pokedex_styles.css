@@ -75,7 +75,7 @@ body {
     position: fixed;
     top: 20px;
     right: 20px;
-    z-index: 10; /* Asegura que el botón se quede encima del contenido */
+    z-index: 5; /* Asegura que el botón se quede encima del contenido */
 }
 
 .icon {
@@ -130,4 +130,5 @@ footer {
     height:100%;
     top:0;
     left:0;
+    z-index: 10;
 }

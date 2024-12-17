@@ -42,15 +42,10 @@
 <script>
     // Función que redirige al hacer clic en el Pokémon
     function viewPokemon(pokemonId) {
-        e=document.getElementById("pokemon-card-"+pokemonId)
-        t=e.style.display;
-        e.style.display = "none";
         iframe=document.createElement("iframe")
         iframe.id = "pokedex-info";
         iframe.src = "{{ url_for('pokemon_info')}}?pokemon_id="+pokemonId;
         document.getElementById("pokedex-info-container").append(iframe);
-        sleep(100);
-        e.style.display = t;
     }
     function sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
