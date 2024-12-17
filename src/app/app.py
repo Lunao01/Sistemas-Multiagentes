@@ -372,7 +372,7 @@ def pokemon_info():
                     type_msg += f"{i.type}, "
                 type_msg += f"{pokemon.types[-1].type}"
             else:
-                type_msg = "Undefined."
+                type_msg = None
 
 
             if len(pokemon.habitat) > 0:
@@ -381,7 +381,7 @@ def pokemon_info():
                     habitat_msg += f"{i.habitat}, "
                 habitat_msg += f"{pokemon.habitat[-1].habitat}"
             else:
-                habitat_msg = "Undefined."
+                habitat_msg = None
 
             if len(pokemon.abilities) > 0:
                 abilities_msg = ""
@@ -389,7 +389,7 @@ def pokemon_info():
                     abilities_msg += f"{i.ability}, "
                 abilities_msg += f"{pokemon.abilities[-1].ability}"
             else:
-                abilities_msg = "Undefined."
+                abilities_msg = None
 
 
             # Calculamos el mejor valor en cada estadística

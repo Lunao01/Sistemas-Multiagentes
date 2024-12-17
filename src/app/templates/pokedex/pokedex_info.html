@@ -19,12 +19,20 @@
             <div class="pokemon-info">
                 <div class="info" id="pokemon-id"><b>ID</b>: {{ id }}</div>
                 <div class="info" id="pokemon-name"><b>Name</b>: {{ name }}</div>
+                {% if type != None %}
                 <div class="info" id="pokemon-types"><b>Type</b>: {{ type }}</div>
+                {% endif %}
                 <div class="info" id="pokemon-height"><b>Height</b>: {{ height }} dm</div>
                 <div class="info" id="pokemon-weight"><b>Weight</b>: {{ weight }} hg</div>
+                {% if habitat != None %}
                 <div class="info" id="pokemon-habitat"><b>Habitat</b>: {{ habitat }}</div>
+                {% endif %}
+                {% if abilities != None %}
                 <div class="info" id="pokemon-habilities"><b>Abilities</b>: {{ abilities }}</div>
-                <div class="info" id="pokemon-is-legendary"><b>Legendary</b>: {{ legendary }}</div>
+                {% endif %}
+                {% if legendary %}    
+                <div class="info" id="pokemon-is-legendary"><b>Legendary</b></div>
+                {% endif %}
             </div>
         </div>
         <div class="screen">
