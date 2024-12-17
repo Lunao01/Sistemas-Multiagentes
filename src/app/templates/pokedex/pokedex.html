@@ -18,8 +18,8 @@
                 {% for pokemon in row %}
                 <td>
                     <button class="pokemon-card" onclick="viewPokemon('{{ pokemon[0] }}')">
-                        <img src="{{ pokemon[1] }}" alt="{{ pokemon[0] }}" class="pokemon-image">
-                        <p class="pokemon-name">{{ pokemon[0] }}</p>
+                        <img src="{{ pokemon[2] }}" alt="{{ pokemon[1] }}" class="pokemon-image">
+                        <p class="pokemon-name">{{ pokemon[1] }}</p>
                     </button>
                 </td>
                 {% endfor %}
@@ -36,8 +36,8 @@
 </footer>
 <script>
     // Función que redirige al hacer clic en el Pokémon
-    function viewPokemon(pokemonName) {
-        window.location.href = "{{ url_for('pokemon_info') }}?pokemon_name=" + pokemonName;
+    function viewPokemon(pokemonId) {
+        window.location.href = "{{ url_for('pokemon_info') }}?pokemon_id=" + pokemonId;
     }
     document.getElementById("exitBtn").addEventListener("click", function() {
         window.location.href = "{{ url_for('menu') }}";  // Redirige al menu

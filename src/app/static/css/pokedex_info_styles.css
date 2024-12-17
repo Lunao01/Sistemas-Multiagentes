@@ -14,14 +14,13 @@ body {
 
 .pokedex {
     width: 900px;
-    height: 700px;
-    background-color: #cc0000;
+    height: fit-content;
+    background-color: #d33030; /*#cc0000*/
     border: 10px solid #990000;
     border-radius: 10px;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
-    position: relative;
+    position: absolute;
 }
 
 .header {

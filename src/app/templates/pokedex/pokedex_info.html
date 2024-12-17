@@ -11,14 +11,14 @@
         <div class="header">Pokédex</div>
         <div class="screen">
             <div class="pokemon-image">
-                <img src={{ img }} alt="Pokemon Image" id="pokemon-image">
+                <img src={{ img[0] }} alt="Pokemon Image" id="pokemon-image">
             </div>
             <div class="pokemon-info">
                 <div class="info" id="pokemon-id">ID: {{ id }}</div>
                 <div class="info" id="pokemon-name">Name: {{ name }}</div>
                 <div class="info" id="pokemon-types">Type: {{ type }}</div>
-                <div class="info" id="pokemon-height">Height: {{ height }}m</div>
-                <div class="info" id="pokemon-weight">Weight: {{ weight }}kg</div>
+                <div class="info" id="pokemon-height">Height: {{ height }} dm</div>
+                <div class="info" id="pokemon-weight">Weight: {{ weight }} hg</div>
                 <div class="info" id="pokemon-habitat">Habitat: {{ habitat }}</div>
                 <div class="info" id="pokemon-habilities">Abilities: {{ abilities }}</div>
                 <div class="info" id="pokemon-is-legendary">Legendary: {{ legendary }}</div>
@@ -64,14 +64,21 @@
             const width = parseInt(bar.style.width);
     
             // Aplicamos colores según el rango
-            if (width < 30) {
-                bar.style.backgroundColor = '#990000'; 
-            } else if (width < 60) {
-                bar.style.backgroundColor = '#ff8f00';
+            if (width < 17) {
+                bar.style.backgroundColor = '#990000'; // Muy malo
+            } else if (width < 34) {
+                bar.style.backgroundColor = '#ff4500'; // Malo
+            } else if (width < 51) {
+                bar.style.backgroundColor = '#ffd700'; // Regular
+            } else if (width < 68) {
+                bar.style.backgroundColor = '#007f00'; // Bueno
             } else {
-                bar.style.backgroundColor = '#00ff04'; 
+                bar.style.backgroundColor = '#00ff04'; // Muy bueno
             }
         });
+        document.getElementById("exitBtn").addEventListener("click", function() {
+            window.location.href = "{{ url_for('pokedex') }}";  // Redirige al menu
+          });
     </script>
 </body>
 </html>

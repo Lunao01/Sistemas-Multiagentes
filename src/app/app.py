@@ -332,8 +332,7 @@ def pokedex():
             unlocked_pokemon_list = []
             for p in user.unlocked_pokemon:
                 pokemon_img = f"{REST_API_CLIENT_URL}/pokemon_img/{p.id}"
-                pokemon_name = p.name
-                unlocked_pokemon_list.append([pokemon_name, pokemon_img])
+                unlocked_pokemon_list.append([p.id, p.name, pokemon_img])
 
             return render_template('pokedex/pokedex.html', unlocked_pokemon_list=unlocked_pokemon_list)
         
@@ -341,8 +340,8 @@ def pokedex():
             return redirect(url_for('login'))
         
 # Pokedex/Pokemon
-@app.route('/menu/pokedex/{pokemon_name}')
-def pokemon_info(pokemon_name):
+@app.route('/menu/pokedex/data')
+def pokemon_info():
     # Se debe comprobar si el usuario inició sesión (cookies)
     with Session(engine) as session:
         if request.cookies.get(SESSION) != None:
@@ -353,13 +352,74 @@ def pokemon_info(pokemon_name):
 
         if user != None:
             # Buscamos el pokemon en la base de datos
-            stmt = select(Pokemon).where(Pokemon.name == pokemon_name)
+            stmt = select(Pokemon).where(Pokemon.id == request.args['pokemon_id'])
             pokemon = session.scalar(stmt)
-
+            
+            # Control para que los usuarios no pongan números absurdos 
+            if pokemon == None:
+                return redirect(url_for('pokedex'))
+            
             # Imagen del pokemon
             img_pokemon = f"{REST_API_CLIENT_URL}/pokemon_img/{pokemon.id}",
+            
 
-            return render_template('pokedex/pokedex.html',img=img_pokemon, id=pokemon.id, name=pokemon.name, type=pokemon.types, height=pokemon.height, weight=pokemon.weight, habitat=pokemon.habitat, abilities=pokemon.abilities, legendary=pokemon.is_legendary)
+            # Ajustamos el formato de mensaje para types, habitat y abilities
+            if len(pokemon.types) > 0:
+                type_msg = ""
+                for i in pokemon.types[:-1]:
+                    type_msg += f"{i.type}, "
+                type_msg += f"{pokemon.types[-1].type}"
+            else:
+                type_msg = "Undefined."
+
+
+            if len(pokemon.habitat) > 0:
+                habitat_msg = ""
+                for i in pokemon.habitat[:-1]:
+                    habitat_msg += f"{i.habitat}, "
+                habitat_msg += f"{pokemon.habitat[-1].habitat}"
+            else:
+                habitat_msg = "Undefined."
+
+            if len(pokemon.abilities) > 0:
+                abilities_msg = ""
+                for i in pokemon.abilities[:-1]:
+                    abilities_msg += f"{i.ability}, "
+                abilities_msg += f"{pokemon.abilities[-1].ability}"
+            else:
+                abilities_msg = "Undefined"
+
+
+            # Calculamos el mejor valor en cada estadística
+            stmt = select(Pokemon).order_by(Pokemon.hp.desc()).limit(1)
+            pokemon_with_highest_hp = session.scalar(stmt)
+
+            stmt = select(Pokemon).order_by(Pokemon.attack.desc()).limit(1)
+            pokemon_with_highest_attack = session.scalar(stmt)
+
+            stmt = select(Pokemon).order_by(Pokemon.defense.desc()).limit(1)
+            pokemon_with_highest_defense = session.scalar(stmt)
+
+            stmt = select(Pokemon).order_by(Pokemon.special_attack.desc()).limit(1)
+            pokemon_with_highest_special_attack = session.scalar(stmt)
+
+            stmt = select(Pokemon).order_by(Pokemon.special_defense.desc()).limit(1)
+            pokemon_with_highest_special_defense = session.scalar(stmt)
+
+            stmt = select(Pokemon).order_by(Pokemon.speed.desc()).limit(1)
+            pokemon_with_highest_speed = session.scalar(stmt)
+            
+            # Porcentaje para el diagrama de barras en la info del pokemon
+            hp = int((pokemon.hp/pokemon_with_highest_hp.hp)*85)
+            attack = int((pokemon.attack/pokemon_with_highest_attack.attack)*85)
+            defense = int((pokemon.defense/pokemon_with_highest_defense.defense)*85)
+            special_attack = int((pokemon.special_attack/pokemon_with_highest_special_attack.special_attack)*85)
+            special_defense = int((pokemon.special_defense/pokemon_with_highest_special_defense.special_defense)*85)
+            speed = int((pokemon.speed/pokemon_with_highest_speed.speed)*85)
+
+
+
+            return render_template('pokedex/pokedex_info.html',img=img_pokemon, id=pokemon.id, name=pokemon.name, type=type_msg, height=pokemon.height, weight=pokemon.weight, habitat=habitat_msg, abilities=abilities_msg, legendary=pokemon.is_legendary, hp=hp, attack=attack, defense=defense, special_attack=special_attack, special_defense=special_defense, speed=speed)
         else:
             return redirect(url_for('login'))
 
@@ -403,21 +463,6 @@ def ranking():
         del user, stmt
 
     if user_found:
-        
-
-        # top_users = [
-        # {'username': 'AshKetchum', 'high_score': 1500},
-        # {'username': 'Misty', 'high_score': 1400},
-        # {'username': 'Brock', 'high_score': 1350},
-        # {'username': 'GaryOak', 'high_score': 1300},
-        # {'username': 'PikachuFan', 'high_score': 1250},
-        # {'username': 'AshKetchum', 'high_score': 1500},
-        # {'username': 'Misty', 'high_score': 1400},
-        # {'username': 'Brock', 'high_score': 1350},
-        # {'username': 'GaryOak', 'high_score': 1300},
-        # {'username': 'PikachuFan', 'high_score': 1250},]
-
-
         return render_template('ranking/ranking.html', top_users=top_users, user_ranking=user_ranking, user_high_score=user_high_score)
     else:
         return redirect(url_for('login'))
