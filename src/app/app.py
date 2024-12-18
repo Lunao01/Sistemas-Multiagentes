@@ -457,6 +457,21 @@ def ranking():
                 ranking:dict[int,int] = dict(map(lambda x: (x[0],x[2]),session.execute(stmt_rank).all()))
                 user_ranking = ranking[user.id]
                 top_users:list[dict[str,str|int]] = list(map(lambda x:{'username':x[1],'high_score':x[3]},session.execute(stmt_rank.limit(10)).all()))
+                
+                # top_users = [
+                #     { "username": "paco_moon_003", "high_score": 30 },
+                #     { "username": "Vegetta777", "high_score": 14 },
+                #     { "username": "Paco", "high_score": 11 },
+                #     { "username": "ParaParaParadise", "high_score": 9 },
+                #     { "username": "Funzo", "high_score": 14 },
+                #     { "username": "Abuelo_Eduardo", "high_score": 8 },
+                #     { "username": "DEEMO", "high_score": 7 },
+                #     { "username": "Enzo", "high_score": 3 },
+                #     { "username": "dANI_30", "high_score": 2 },
+                #     { "username": "nezred", "high_score": -1 },
+                # ]
+                # user_ranking = 4
+                # user_high_score = 9
 
                 user_found=True
 
