@@ -1,0 +1,63 @@
+{% extends "./base.html" %}
+
+{% block title %}Pokédex - PokeQuest{% endblock %}
+
+{% block customCSS %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pokedex_styles.css') }}">
+{% endblock %}
+
+{% block body %}
+<div class="logo">
+    <img src="{{ url_for('static', filename='img/logo_2.png') }}" alt="Logo del juego">
+  </div>
+<main>
+    <div id="pokedex-info-container">
+        {% if not pokemon_selected_id == None %}
+        <iframe id="pokedex-info" src="{{ url_for('pokemon_info')}}?pokemon_id={{pokemon_selected_id}}" ></iframe>
+        {% endif %}
+    </div>
+    <section id="pokedex-grid" class="pokedex-grid">
+        <table class="unlocked_pokemon">
+            {% for row in unlocked_pokemon_list|batch(5) %}
+            <tr>
+                {% for pokemon in row %}
+                <td>
+                    <button class="pokemon-card" id="pokemon-card-{{pokemon[0]}}" onclick="viewPokemon('{{ pokemon[0] }}')">
+                        <img src="{{ pokemon[2] }}" alt="{{ pokemon[1] }}" class="pokemon-image">
+                        <p class="pokemon-name">{{ pokemon[1] }}</p>
+                    </button>
+                </td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </table>
+    </section>
+</main>
+<div class="top-menu">
+    <img id="exitBtn" src="https://img.icons8.com/ios-filled/50/000000/delete-sign.png" alt="Exit" class="icon">
+  </div>
+<footer>
+    <p>© 2024 - PokeQuest</p>
+</footer>
+<script>
+    // Función que redirige al hacer clic en el Pokémon
+    function viewPokemon(pokemonId) {
+        iframe=document.createElement("iframe")
+        iframe.id = "pokedex-info";
+        iframe.src = "{{ url_for('pokemon_info')}}?pokemon_id="+pokemonId;
+        document.getElementById("pokedex-info-container").append(iframe);
+    }
+    function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+    document.getElementById("exitBtn").addEventListener("click", function() {
+        window.location.href = "{{ url_for('menu') }}";  // Redirige al menu
+    });
+    
+    function closePokedexInfo() {
+        // window.location.href = "{{url_for('pokedex')}}";
+        document.getElementById("pokedex-info").remove();
+    }
+</script>
+    
+{% endblock %}

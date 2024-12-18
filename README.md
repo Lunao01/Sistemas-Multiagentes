@@ -14,6 +14,32 @@ X-Expires: 1764372956622
 X-Token: Bco0cck0xp8Be7qqWE_yFU4Ji-ZxxhKjkgzr2LEKQOQ
 --->
 
+This is a simple quiz game, about the properties of pokemons, with a leaderboard system, and an unlockable pokedex. In order to unlock a pokemon there, you only need to answer a correct question with the pokemon there (only the correct pokemon with the answer would be unlocked, not the other one)
+
+## Screenshots
+
+![](./attachments/1.png)
+
+![](./attachments/2.png)
+
+![](./attachments/4.png)
+
+![](./attachments/5.png)
+
+![](./attachments/3.png)
+
+![](./attachments/6.png)
+
+## Setup
+
+This setup is very simple, all you need is docker, in order to set up all the containers.
+
+You just need to run:
+
+```bash
+bash run.sh
+```
+
 ## Lista de requisitos
 
 ### Requisitos funcionales

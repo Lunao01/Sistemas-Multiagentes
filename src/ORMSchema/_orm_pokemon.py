@@ -3,13 +3,13 @@ import enum
 from sqlalchemy import Enum, Integer, Boolean, ForeignKey, UnicodeText
 from sqlalchemy.orm import DeclarativeBase, Mapped, relationship, mapped_column
 
-
 class GrowthRate(enum.Enum):
-    slow = 1
-    medium_slow = 2
-    medium = 3
-    fast = 4
-    slow_then_very_fast = 5
+    slow = "slow"
+    medium_slow = "medium-slow"
+    medium = "medium"
+    fast = "fast"
+    slow_then_very_fast = "slow-then-very-fast"
+    fast_then_very_slow = "fast-then-very-slow"
 
 
 class Base(DeclarativeBase):
@@ -32,10 +32,10 @@ class Pokemon(Base):
     gender_rate: Mapped[int] = mapped_column(Integer())
 
     capture_rate: Mapped[int] = mapped_column(Integer())
-    base_happiness: Mapped[int] = mapped_column(Integer())
+    base_happiness: Mapped[int] = mapped_column(Integer(), nullable=True)
     abilities: Mapped[List["Ability"]] = relationship(cascade="all, delete-orphan")
     forms: Mapped[List["Form"]] = relationship(cascade="all, delete-orphan")
-    held_items: Mapped[Boolean] = mapped_column(Boolean())
+    held_items: Mapped[bool] = mapped_column(Boolean())
     moves: Mapped[List["Move"]] = relationship(cascade="all, delete-orphan")
     types: Mapped[List["Type"]] = relationship(cascade="all, delete-orphan")
     hp: Mapped[int] = mapped_column(Integer())

@@ -7,6 +7,7 @@ body {
   align-items: center;
   height: 100vh;
   background-color: #f8f8f8;
+  background-image: url("/static/img/background.png");
 }
 
 /* Contenedor principal */
@@ -37,7 +38,6 @@ body {
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  max-width: 700px;
   gap: 20px;
 }
 
@@ -51,11 +51,21 @@ body {
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
   display: flex;
+  flex-direction: column; /* Alinear en columna */
   justify-content: center;
   align-items: center;
   overflow: hidden;
-  height: 250px; /* Altura fija */
-  max-width: 300px;
+  height: 500px; /* Altura fija */
+  width: 500px; /* Ancho fijo */
+}
+
+.pokemon-btn{
+  height: 400px; /* Altura fija */
+  width: 400px; /* Ancho fijo */
+}
+
+.pokemon-name{
+  margin-top: 10px; 
 }
 
 .pokemon-btn:hover {
@@ -65,8 +75,8 @@ body {
 
 /* Imagen dentro de los botones */
 .pokemon-btn img {
-  max-width: 100%;
-  max-height: 100%;
+  width: 300px;
+  height: 300px;
   object-fit: contain;
 }
 

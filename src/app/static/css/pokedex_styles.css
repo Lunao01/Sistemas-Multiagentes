@@ -1,0 +1,136 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #fff;
+    background-image: url("/static/img/background.png");
+    background-attachment: fixed;
+}
+
+/* Estilo del logo */
+.logo {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.logo img {
+    max-width: 100%;
+    height: auto;
+    width: 200px; /* Tamaño adecuado para el logo */
+}
+
+/* Estilo para la tabla de Pokémon */
+.unlocked_pokemon {
+    width: 100%; /* La tabla ocupará todo el ancho disponible */
+    border-collapse: collapse; /* Elimina los espacios entre celdas */
+    margin-top: 20px;
+}
+
+.unlocked_pokemon td {
+    padding: 10px;
+    text-align: center;
+    vertical-align: middle;
+    width: 20%; /* Forzamos un ancho fijo para las celdas */
+    height: 250px; /* Forzamos una altura fija para las celdas */
+}
+
+.pokemon-card {
+    background: #f8f8f8;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    padding: 15px;
+    text-align: center;
+    cursor: pointer;
+    transition: transform 0.3s ease, background 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center; /* Centra el contenido dentro del botón */
+    width: 100%;
+    height: 200px; /* Fija la altura de cada tarjeta */
+    box-sizing: border-box;
+}
+
+.pokemon-card:hover {
+    background: #f0f0f0;
+    transform: scale(1.05);
+}
+
+.pokemon-image {
+    width: 80px;
+    height: 80px;
+    display: block;
+    margin: 0 auto;
+    object-fit: contain; /* Ajusta bien la imagen */
+}
+
+.pokemon-name {
+    font-weight: bold;
+    margin-top: 10px;
+    color: #333;
+    font-size: 14px;
+}
+
+/* Estilos para el top-menu (icono de salida) */
+.top-menu {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 5; /* Asegura que el botón se quede encima del contenido */
+}
+
+.icon {
+    width: 40px; /* Tamaño más pequeño para el icono */
+    height: 40px;
+    cursor: pointer;
+    transition: transform 0.3s ease;
+}
+
+.icon:hover {
+    transform: scale(1.1);
+}
+
+/* Estilos del footer */
+footer {
+    text-align: center;
+    padding: 5px 0;
+    background-color: #f9f9f9;
+    font-size: 10px;
+    color: #666;
+    margin-top: 40px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .unlocked_pokemon td {
+        padding: 8px; /* Menos padding en pantallas medianas */
+    }
+
+    .pokemon-card {
+        height: 180px; /* Ajusta la altura de las tarjetas en pantallas medianas */
+    }
+}
+
+@media (max-width: 480px) {
+    .unlocked_pokemon td {
+        padding: 5px; /* Menos padding en pantallas pequeñas */
+    }
+
+    .pokemon-card {
+        height: 160px; /* Ajusta la altura de las tarjetas en pantallas pequeñas */
+    }
+
+    footer {
+        font-size: 8px; /* Fuente aún más pequeña en pantallas pequeñas */
+    }
+}
+
+#pokedex-info {
+    position: fixed;
+    width: 100%;
+    height:100%;
+    top:0;
+    left:0;
+    z-index: 10;
+}

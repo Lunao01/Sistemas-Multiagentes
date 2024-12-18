@@ -1,13 +1,7 @@
 # Archivo para configurar app.py
-class Config:
-    SECRET_KEY = 'S8!}.Nz=_ba?@v5QPdcZ\^5a,Y>],F'
-
-class DevelopmentConfig(Config):
+class DevelopmentConfig():
     DEBUG = True # modo debug para poder aplicar cambios con el servidor lanzado
-    MYSQL_HOST = 'localhost' # host
-    MYSQL_USER = 'root' # usuario 
-    MYSQL_PASSWORD = '123456' # password
-    MYSQL_DB = 'poke_quest' # nombre de la base de datos
+    SERVER_NAME='0.0.0.0:5000'
 
 config = {
     'development': DevelopmentConfig

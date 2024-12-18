@@ -1,0 +1,153 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.pokedex {
+    width: 900px;
+    height: fit-content;
+    background-color: #d33030; /*#cc0000*/
+    border: 10px solid #990000;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 20px;
+    bottom: 20px;
+}
+
+.header {
+    background-color: #990000;
+    color: white;
+    padding: 10px;
+    text-align: center;
+    font-size: 1.5rem;
+}
+
+.screen {
+    flex: 1;
+    background-color: #fff;
+    margin: 20px;
+    border: 5px solid #990000;
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.screen#info {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+}
+
+.pokemon-image {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pokemon-image img {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+}
+
+.pokemon-info {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.info {
+    background-color: #ffe6e6;
+    padding: 10px;
+    border-radius: 5px;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.stats {
+    margin-top: 0px;
+    
+}
+
+.stat-bar {
+    display: flex;
+    align-items: center;
+    text-align: right;
+    margin: 5px 0;
+}
+
+.stat-bar span {
+    width: 160px;
+    color: black;
+    font-weight: bold;
+    padding-right: 10px;
+}
+
+.stat-bar>div {
+    height: 20px;
+    width: 100%;
+    border: 3px solid #990000;
+    border-radius: 5px;
+}
+
+.stat-bar div div.color-bar {
+    height: 100%;
+    background-color: #990000;
+    width: 0;
+    transition: width 0.3s;
+}
+
+.footer {
+    background-color: #990000;
+    color: white;
+    text-align: center;
+    padding: 5px;
+}
+
+/* Menú superior con íconos */
+.top-menu {
+    position: absolute;
+    top: 10px;
+    right: 5px;
+    display: flex;
+    gap: 20px;
+    align-items: center; 
+}
+
+/* Estilo para el botón (icono) */
+.top-menu .icon {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    transition: transform 0.3s ease;  
+}
+
+.top-menu .icon:hover {
+    transform: scale(1.2); 
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .top-menu {
+        position: static;
+        justify-content: center; 
+        width: 100%; 
+        top: 0;
+        right: 0; 
+        gap: 10px; 
+    }
+    .top-menu .icon {
+        width: 25px; 
+        height: 25px;
+    }
+}

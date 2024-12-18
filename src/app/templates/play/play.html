@@ -11,28 +11,52 @@
   <div class="container">
     <!-- Pregunta en la parte superior -->
     <div class="question">
-        Which Pokémon has the highest Special Attack?
+        {{ question['question'] }}
     </div>
 
     <!-- Contenedor de botones con imágenes de Pokémon -->
     <div class="buttons-container">
-      <button class="pokemon-btn">
-        <img src="https://assets.pokemon.com/assets/cms2/img/pokedex/full/350.png" alt="Charmander">
-      </button>
+      <form method="POST"
+            action="{{ url_for('play') }}?{#
+          #}{{'key='~question.key~('&'|safe)}}{#
+          #}{{'type='~question.type~('&'|safe)}}{#
+          #}{{'condition='~question.condition~('&'|safe)}}{#
+          #}{% if 'property' in question %}{{'property='~question.property}}{%endif%}{#
+          #}&pokemon1={{pokemon_1.id}}{#
+          #}&pokemon2={{pokemon_2.id}}{#
+          #}&pokemon_guess={{pokemon_1.id}}">
+        <button type="submit" class="pokemon-btn" id="pokemon-1-btn">
+          <img src={{ img_pokemon_1 }} alt="{{name_pokemon_1}}">
+          <span class="pokemon-name">{{pokemon_1.name}}</span>
+        </button>
+      </form>
 
-      <button class="pokemon-btn">
-        <img src="https://assets.pokemon.com/assets/cms2/img/pokedex/full/103.png" alt="Squirtle">
-      </button>
+      <form method="post"
+            action="{{ url_for('play') }}?{#
+          #}{{'key='~question.key~('&'|safe)}}{#
+          #}{{'type='~question.type~('&'|safe)}}{#
+          #}{{'condition='~question.condition~('&'|safe)}}{#
+          #}{% if 'property' in question %}{{'property='~question.property}}{%endif%}{#
+          #}&pokemon1={{pokemon_1.id}}{#
+          #}&pokemon2={{pokemon_2.id}}{#
+          #}&pokemon_guess={{pokemon_2.id}}">
+        <button class="pokemon-btn" id="pokemon-2-btn">
+          <img width="256" src={{ img_pokemon_2 }} alt="{{name_pokemon_2}}">
+          <span class="pokemon-name">{{pokemon_2.name}}</span>
+        </button>
+      </form>
     </div>
 
     <!-- Score en la parte inferior derecha -->
     <div class="score">
-      Score = 0
+      Score = {{ score }}
     </div>
 
     <!-- Menú superior derecho -->
     <div class="top-menu">
-        <img src="https://img.icons8.com/ios-filled/50/000000/delete-sign.png" alt="Cross" class="icon">
+        <a href="/menu">
+          <img id="exitBtn" src="https://img.icons8.com/ios-filled/50/000000/delete-sign.png" alt="Cross" class="icon">
+        </a>
     </div>
   </div>
 {% endblock %}

@@ -1,0 +1,109 @@
+{% extends "./base.html" %}
+
+{% block title %}Pokédex- PokeQuest{% endblock %}
+
+{% block customCSS %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/pokedex_info_styles.css')}}">
+{% endblock %}
+
+{% block body %}
+    <div class="pokedex">
+    <div class="top-menu">
+        <img id="exitBtn" src="https://img.icons8.com/ios-filled/50/000000/delete-sign.png" alt="Cross" class="icon">
+    </div>
+        <div class="header"><b>Pokédex</b></div>
+        <div class="screen" id="info">
+            <div class="pokemon-image">
+                <img src={{ img[0] }} alt="Pokemon Image" id="pokemon-image">
+            </div>
+            <div class="pokemon-info">
+                <div class="info" id="pokemon-id"><b>ID</b>: {{ id }}</div>
+                <div class="info" id="pokemon-name"><b>Name</b>: {{ name }}</div>
+                {% if type != None %}
+                <div class="info" id="pokemon-types"><b>Type</b>: {{ type }}</div>
+                {% endif %}
+                <div class="info" id="pokemon-height"><b>Height</b>: {{ height }} dm</div>
+                <div class="info" id="pokemon-weight"><b>Weight</b>: {{ weight }} hg</div>
+                {% if habitat != None %}
+                <div class="info" id="pokemon-habitat"><b>Habitat</b>: {{ habitat }}</div>
+                {% endif %}
+                {% if abilities != None %}
+                <div class="info" id="pokemon-habilities"><b>Abilities</b>: {{ abilities }}</div>
+                {% endif %}
+                {% if legendary %}    
+                <div class="info" id="pokemon-is-legendary"><b>Legendary</b></div>
+                {% endif %}
+            </div>
+        </div>
+        <div class="screen">
+            <div class="stats">
+                <div class="stat-bar">
+                    <span>HP</span>
+                    <div>
+                        <div class="color-bar" style="width: {{ hp }}%;"></div>
+                    </div>
+                </div>
+                <div class="stat-bar">
+                    <span>Attack</span>
+                    <div>
+                        <div class="color-bar" style="width: {{ attack }}%;"></div>
+                    </div>
+                </div>
+                <div class="stat-bar">
+                    <span>Defense</span>
+                    <div>
+                        <div class="color-bar" style="width: {{ defense }}%;"></div>
+                    </div>
+                </div>
+                <div class="stat-bar">
+                    <span>Special attack</span>
+                    <div>
+                        <div class="color-bar" style="width: {{ special_attack }}%;"></div>
+                    </div>
+                </div>
+                <div class="stat-bar">
+                    <span>Special defense</span>
+                    <div>
+                        <div class="color-bar" style="width: {{ special_defense }}%;"></div>
+                    </div>
+                </div>
+                <div class="stat-bar">
+                    <span>Speed</span>
+                    <div>
+                        <div class="color-bar" style="width: {{ speed }}%;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+        <!-- Menú superior derecho -->
+    <script>
+        // Seleccionamos todas las barras
+        const bars = document.querySelectorAll('.stat-bar>div .color-bar');
+    
+        bars.forEach(bar => {
+            // Obtenemos el ancho de la barra como número
+            const width = parseInt(bar.style.width);
+    
+            // Aplicamos colores según el rango
+            if (width < 17) {
+                bar.style.backgroundColor = '#990000'; // Muy malo
+            } else if (width < 34) {
+                bar.style.backgroundColor = '#ff4500'; // Malo
+            } else if (width < 51) {
+                bar.style.backgroundColor = '#ffd700'; // Regular
+            } else if (width < 68) {
+                bar.style.backgroundColor = '#007f00'; // Bueno
+            } else {
+                bar.style.backgroundColor = '#00ff04'; // Muy bueno
+            }
+        });
+        document.getElementById("exitBtn").addEventListener("click", function() {
+            window.location.href = "{{ url_for('pokedex') }}";  // Redirige al menu
+            parent.closePokedexInfo();
+          });
+    </script>
+</body>
+</html>
+{% endblock %}
