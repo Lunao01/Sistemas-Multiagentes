@@ -11,7 +11,7 @@
   <div class="container">
     <!-- Pregunta en la parte superior -->
     <div class="question">
-        {{ question['question'] }}
+        {{ question['question']|replace('-',' ') }}
     </div>
 
     <!-- Contenedor de botones con imágenes de Pokémon -->
